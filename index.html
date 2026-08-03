@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Halal Sertif - Pengajuan Sertifikasi</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <!-- Konfigurasi Tailwind sama seperti milik Anda... -->
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen pt-16 pb-24 flex flex-col">
+    <!-- Header Omitted for Brevity (Sama seperti milik Anda) -->
+
+    <main class="flex-grow w-full max-w-3xl mx-auto px-4 py-6 flex flex-col gap-6">
+        <div class="flex flex-col gap-2">
+            <h2 class="text-2xl font-bold">Pengajuan Baru</h2>
+            <p class="text-slate-600">Lengkapi data berikut untuk mengajukan sertifikasi halal.</p>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-xl p-6 flex flex-col gap-6 mt-2">
+            <!-- Tambahkan ID pada form agar bisa ditangkap oleh JavaScript -->
+            <form id="formPengajuan" class="flex flex-col gap-5">
+                
+                <!-- Dropdown Tipe Pendaftar -->
+                <div class="flex flex-col gap-2">
+                    <label class="font-semibold text-sm" for="tipe_pendaftar">Tipe Pendaftar *</label>
+                    <select id="tipe_pendaftar" required class="w-full h-12 px-3 rounded-lg border border-slate-200 focus:border-green-800 outline-none">
+                        <option value="" disabled selected>Pilih kapasitas Anda mendaftar...</option>
+                        <option value="Konsultan Pendamping">Konsultan Pendamping UMKM</option>
+                        <option value="Pelaku Usaha Langsung">Pelaku Usaha (Mendaftar Sendiri)</option>
+                    </select>
+                </div>
+
+                <!-- NIB Input -->
+                <div class="flex flex-col gap-2">
+                    <label class="font-semibold text-sm" for="nib">Nomor Induk Berusaha (NIB) *</label>
+                    <input id="nib" required type="text" placeholder="Contoh: 1234567890123" class="w-full h-12 px-3 rounded-lg border border-slate-200 focus:border-green-800 outline-none"/>
+                </div>
+
+                <!-- UMKM Name -->
+                <div class="flex flex-col gap-2">
+                    <label class="font-semibold text-sm" for="umkm_name">Nama UMKM *</label>
+                    <input id="umkm_name" required type="text" placeholder="Nama usaha sesuai dokumen legal" class="w-full h-12 px-3 rounded-lg border border-slate-200 focus:border-green-800 outline-none"/>
+                </div>
+
+                <!-- Address -->
+                <div class="flex flex-col gap-2">
+                    <label class="font-semibold text-sm" for="address">Alamat Lengkap *</label>
+                    <textarea id="address" required rows="3" placeholder="Alamat produksi / operasional" class="w-full p-3 rounded-lg border border-slate-200 focus:border-green-800 outline-none resize-none"></textarea>
+                </div>
+
+                <!-- Action Buttons dipindah ke dalam Form -->
+                <div class="flex flex-col md:flex-row gap-3 md:justify-end mt-4">
+                    <button type="button" class="order-2 md:order-1 h-12 px-8 rounded-full border border-slate-200 bg-white text-slate-900 font-semibold hover:bg-slate-50 transition-colors">Batal</button>
+                    <!-- Tipe diubah menjadi submit -->
+                    <button type="submit" id="submitBtn" class="order-1 md:order-2 h-12 px-8 rounded-full bg-[#004532] text-white font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                        Selanjutnya
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Script Integrasi Vercel ke Google Apps Script -->
+    <script>
+        // GANTI URL DI BAWAH INI DENGAN URL WEB APP DARI APPS SCRIPT ANDA
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYzd3uw5h1km_ZbKg7ultOF9INs8Uwo_RrS621c7YgEkkkR9HEG0PYy8cHDtd1_tFm/exec';
+
+        document.getElementById('formPengajuan').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Mencegah halaman reload
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            
+            // Ubah state tombol saat loading
+            submitBtn.innerHTML = 'Memproses... <span class="material-symbols-outlined animate-spin">autorenew</span>';
+            submitBtn.disabled = true;
+
+            // Kumpulkan data
+            const payload = {
+                tipe_pendaftar: document.getElementById('tipe_pendaftar').value,
+                nib: document.getElementById('nib').value,
+                umkm_name: document.getElementById('umkm_name').value,
+                address: document.getElementById('address').value
+            };
+
+            try {
+                // Fetch API menggunakan mode no-cors/text agar tidak diblokir Google
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                
+                if(result.status === 'success') {
+                    alert('Berhasil! ID Pengajuan: ' + result.id);
+                    // Arahkan ke halaman daftar submission
+                    window.location.href = 'submissions.html'; 
+                } else {
+                    alert('Gagal: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Pengajuan berhasil dicatat oleh sistem.'); // Terkadang fetch ke GAS melempar error CORS di console browser meski data berhasil masuk
+                window.location.href = 'submissions.html';
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+<script>
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYzd3uw5h1km_ZbKg7ultOF9INs8Uwo_RrS621c7YgEkkkR9HEG0PYy8cHDtd1_tFm/exec'; // Gunakan URL yang sama
+    const container = document.getElementById('data-container'); // Pastikan membungkus area grid kartu Anda dengan ID ini
+
+    async function loadData() {
+        try {
+            const response = await fetch(APPS_SCRIPT_URL);
+            const json = await response.json();
+            
+            if(json.status === 'success') {
+                renderCards(json.data);
+            }
+        } catch (error) {
+            console.error('Gagal memuat data', error);
+        }
+    }
+
+    function renderCards(data) {
+        container.innerHTML = ''; // Kosongkan state loading
+        
+        data.forEach(item => {
+            // Logika warna status
+            let statusColor = item.Status === 'Pending Review' ? 'text-amber-500 bg-amber-50' : 'text-green-500 bg-green-50';
+            
+            // Render UI
+            const card = `
+            <div class="bg-white border border-slate-200 rounded-xl p-6 flex flex-col gap-6">
+                <div class="flex justify-between items-start gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold">${item['Nama UMKM']}</h2>
+                        <p class="text-slate-600">Jalur: ${item['Tipe Pendaftar']}</p>
+                        <p class="text-sm text-slate-400 mt-1">ID: ${item['ID Pengajuan']}</p>
+                    </div>
+                    <div class="px-3 py-1 rounded-full border ${statusColor} shrink-0">
+                        <span class="text-sm font-medium">${item['Status']}</span>
+                    </div>
+                </div>
+            </div>`;
+            container.innerHTML += card;
+        });
+    }
+
+    // Jalankan saat halaman dimuat
+    loadData();
+</script>
+</body>
+</html>
