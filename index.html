@@ -2,163 +2,305 @@
 <html lang="id">
 <head>
     <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Halal Sertif - Pengajuan Sertifikasi</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dashboard Halal Sertif</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <!-- Konfigurasi Tailwind sama seperti milik Anda... -->
+    <style>body { font-family: 'Inter', sans-serif; }</style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen pt-16 pb-24 flex flex-col">
-    <!-- Header Omitted for Brevity (Sama seperti milik Anda) -->
+<body class="bg-slate-50 text-slate-800 antialiased p-8">
 
-    <main class="flex-grow w-full max-w-3xl mx-auto px-4 py-6 flex flex-col gap-6">
-        <div class="flex flex-col gap-2">
-            <h2 class="text-2xl font-bold">Pengajuan Baru</h2>
-            <p class="text-slate-600">Lengkapi data berikut untuk mengajukan sertifikasi halal.</p>
+    <div class="max-w-7xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-green-900">Dashboard Manajemen Sertifikasi</h1>
+            <button onclick="bukaModalBuat()" class="bg-green-700 text-white px-4 py-2 rounded-lg hover:bg-green-800 transition">
+                + Pengajuan Awal
+            </button>
         </div>
 
-        <div class="bg-white border border-slate-200 rounded-xl p-6 flex flex-col gap-6 mt-2">
-            <!-- Tambahkan ID pada form agar bisa ditangkap oleh JavaScript -->
-            <form id="formPengajuan" class="flex flex-col gap-5">
-                
-                <!-- Dropdown Tipe Pendaftar -->
-                <div class="flex flex-col gap-2">
-                    <label class="font-semibold text-sm" for="tipe_pendaftar">Tipe Pendaftar *</label>
-                    <select id="tipe_pendaftar" required class="w-full h-12 px-3 rounded-lg border border-slate-200 focus:border-green-800 outline-none">
-                        <option value="" disabled selected>Pilih kapasitas Anda mendaftar...</option>
-                        <option value="Konsultan Pendamping">Konsultan Pendamping UMKM</option>
-                        <option value="Pelaku Usaha Langsung">Pelaku Usaha (Mendaftar Sendiri)</option>
-                    </select>
-                </div>
+        <!-- Tabel Data -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+            <table class="w-full text-left border-collapse whitespace-nowrap">
+                <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-sm">
+                        <th class="p-4 font-semibold text-slate-600">No</th>
+                        <th class="p-4 font-semibold text-slate-600">ID / Nama PU</th>
+                        <th class="p-4 font-semibold text-slate-600">No Daftar</th>
+                        <th class="p-4 font-semibold text-slate-600">Status SH</th>
+                        <th class="p-4 font-semibold text-slate-600">Pembayaran</th>
+                        <th class="p-4 font-semibold text-slate-600">Konsultan</th>
+                        <th class="p-4 font-semibold text-slate-600">Auditor</th>
+                        <th class="p-4 font-semibold text-slate-600">Waktu / Keterangan</th>
+                        <th class="p-4 font-semibold text-slate-600">Fee</th>
+                        <th class="p-4 font-semibold text-slate-600">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tabel-body" class="text-sm divide-y divide-slate-200">
+                    <tr><td colspan="10" class="p-8 text-center text-slate-500">Memuat data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-                <!-- NIB Input -->
-                <div class="flex flex-col gap-2">
-                    <label class="font-semibold text-sm" for="nib">Nomor Induk Berusaha (NIB) *</label>
-                    <input id="nib" required type="text" placeholder="Contoh: 1234567890123" class="w-full h-12 px-3 rounded-lg border border-slate-200 focus:border-green-800 outline-none"/>
+    <!-- Modal Pengajuan Awal (Insert) -->
+    <div id="modalInsert" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-xl w-full max-w-md">
+            <h2 class="text-lg font-bold mb-4">Buat Pengajuan Baru</h2>
+            <form id="formInsert" class="flex flex-col gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Nama Pelaku Usaha *</label>
+                    <input type="text" id="ins_nama" required class="w-full p-2 border rounded-lg focus:ring-green-500">
                 </div>
-
-                <!-- UMKM Name -->
-                <div class="flex flex-col gap-2">
-                    <label class="font-semibold text-sm" for="umkm_name">Nama UMKM *</label>
-                    <input id="umkm_name" required type="text" placeholder="Nama usaha sesuai dokumen legal" class="w-full h-12 px-3 rounded-lg border border-slate-200 focus:border-green-800 outline-none"/>
-                </div>
-
-                <!-- Address -->
-                <div class="flex flex-col gap-2">
-                    <label class="font-semibold text-sm" for="address">Alamat Lengkap *</label>
-                    <textarea id="address" required rows="3" placeholder="Alamat produksi / operasional" class="w-full p-3 rounded-lg border border-slate-200 focus:border-green-800 outline-none resize-none"></textarea>
-                </div>
-
-                <!-- Action Buttons dipindah ke dalam Form -->
-                <div class="flex flex-col md:flex-row gap-3 md:justify-end mt-4">
-                    <button type="button" class="order-2 md:order-1 h-12 px-8 rounded-full border border-slate-200 bg-white text-slate-900 font-semibold hover:bg-slate-50 transition-colors">Batal</button>
-                    <!-- Tipe diubah menjadi submit -->
-                    <button type="submit" id="submitBtn" class="order-1 md:order-2 h-12 px-8 rounded-full bg-[#004532] text-white font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
-                        Selanjutnya
-                        <span class="material-symbols-outlined">arrow_forward</span>
-                    </button>
+                <div class="flex justify-end gap-2 mt-4">
+                    <button type="button" onclick="tutupModalInsert()" class="px-4 py-2 border rounded-lg">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-green-700 text-white rounded-lg">Simpan</button>
                 </div>
             </form>
         </div>
-    </main>
+    </div>
 
-    <!-- Script Integrasi Vercel ke Google Apps Script -->
-    <script>
-        // GANTI URL DI BAWAH INI DENGAN URL WEB APP DARI APPS SCRIPT ANDA
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYzd3uw5h1km_ZbKg7ultOF9INs8Uwo_RrS621c7YgEkkkR9HEG0PYy8cHDtd1_tFm/exec';
-
-        document.getElementById('formPengajuan').addEventListener('submit', async function(e) {
-            e.preventDefault(); // Mencegah halaman reload
-            
-            const submitBtn = document.getElementById('submitBtn');
-            const originalText = submitBtn.innerHTML;
-            
-            // Ubah state tombol saat loading
-            submitBtn.innerHTML = 'Memproses... <span class="material-symbols-outlined animate-spin">autorenew</span>';
-            submitBtn.disabled = true;
-
-            // Kumpulkan data
-            const payload = {
-                tipe_pendaftar: document.getElementById('tipe_pendaftar').value,
-                nib: document.getElementById('nib').value,
-                umkm_name: document.getElementById('umkm_name').value,
-                address: document.getElementById('address').value
-            };
-
-            try {
-                // Fetch API menggunakan mode no-cors/text agar tidak diblokir Google
-                const response = await fetch(APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'text/plain;charset=utf-8',
-                    },
-                    body: JSON.stringify(payload)
-                });
+    <!-- Modal Update Data -->
+    <div id="modalUpdate" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <h2 class="text-lg font-bold mb-4">Update Pengajuan: <span id="upd_id_label" class="text-green-700"></span></h2>
+            <form id="formUpdate" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 
+                <input type="hidden" id="upd_id_pengajuan">
+                
+                <div>
+                    <label class="block text-sm font-medium mb-1">Nomor Daftar</label>
+                    <input type="text" id="upd_no_daftar" class="w-full p-2 border rounded-lg">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-1">Status SH</label>
+                    <select id="upd_status_sh" class="w-full p-2 border rounded-lg">
+                        <option value="Draf PU">Draf PU</option>
+                        <option value="Submitted PU">Submitted PU</option>
+                        <option value="Verified">Verified</option>
+                        <option value="Dikembalikan PU">Dikembalikan PU</option>
+                        <option value="Dikirim ke LPH">Dikirim ke LPH</option>
+                        <option value="Dibatalkan">Dibatalkan</option>
+                        <option value="Pembayaran">Pembayaran</option>
+                        <option value="Review LPH">Review LPH</option>
+                        <option value="Dikirim ke Komisi Fatwa">Dikirim ke Komisi Fatwa</option>
+                        <option value="Terbit SH">Terbit SH</option>
+                        <option value="Proses di LPH">Proses di LPH</option>
+                        <option value="Penetapan Biaya">Penetapan Biaya</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Bayar Via</label>
+                    <select id="upd_bayar_via" class="w-full p-2 border rounded-lg">
+                        <option value="">-- Pilih --</option>
+                        <option value="SiHalal">SiHalal</option>
+                        <option value="LPH">LPH</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Status Bayar</label>
+                    <select id="upd_status_bayar" class="w-full p-2 border rounded-lg">
+                        <option value="">-- Pilih --</option>
+                        <option value="Sudah Bayar">Sudah Bayar</option>
+                        <option value="Belum Bayar">Belum Bayar</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Konsultan</label>
+                    <select id="upd_konsultan" class="w-full p-2 border rounded-lg"></select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Auditor</label>
+                    <select id="upd_auditor" class="w-full p-2 border rounded-lg"></select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Waktu Audit</label>
+                    <input type="date" id="upd_waktu" class="w-full p-2 border rounded-lg">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Fee</label>
+                    <select id="upd_fee" class="w-full p-2 border rounded-lg">
+                        <option value="Belum Bayar">Belum Bayar</option>
+                        <option value="Sudah Bayar">Sudah Bayar</option>
+                    </select>
+                </div>
+
+                <div class="col-span-1 md:col-span-2">
+                    <label class="block text-sm font-medium mb-1">Keterangan</label>
+                    <textarea id="upd_keterangan" rows="2" class="w-full p-2 border rounded-lg"></textarea>
+                </div>
+
+                <div class="col-span-1 md:col-span-2 flex justify-end gap-2 mt-4">
+                    <button type="button" onclick="tutupModalUpdate()" class="px-4 py-2 border rounded-lg">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-green-700 text-white rounded-lg">Update Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // GANTI DENGAN URL WEB APP ANDA
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycb.../exec';
+        let rawData = [];
+        let dbKonsultan = [];
+        let dbAuditor = [];
+
+        async function initDashboard() {
+            try {
+                const response = await fetch(SCRIPT_URL);
                 const result = await response.json();
                 
                 if(result.status === 'success') {
-                    alert('Berhasil! ID Pengajuan: ' + result.id);
-                    // Arahkan ke halaman daftar submission
-                    window.location.href = 'submissions.html'; 
-                } else {
-                    alert('Gagal: ' + result.message);
+                    rawData = result.data;
+                    dbKonsultan = result.db_konsultan;
+                    dbAuditor = result.db_auditor;
+                    
+                    renderTable();
+                    populateDropdowns();
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Pengajuan berhasil dicatat oleh sistem.'); // Terkadang fetch ke GAS melempar error CORS di console browser meski data berhasil masuk
-                window.location.href = 'submissions.html';
-            } finally {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
+            } catch (err) {
+                document.getElementById('tabel-body').innerHTML = `<tr><td colspan="10" class="p-8 text-center text-red-500">Gagal memuat data</td></tr>`;
             }
-        });
-    </script>
-<script>
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYzd3uw5h1km_ZbKg7ultOF9INs8Uwo_RrS621c7YgEkkkR9HEG0PYy8cHDtd1_tFm/exec'; // Gunakan URL yang sama
-    const container = document.getElementById('data-container'); // Pastikan membungkus area grid kartu Anda dengan ID ini
-
-    async function loadData() {
-        try {
-            const response = await fetch(APPS_SCRIPT_URL);
-            const json = await response.json();
-            
-            if(json.status === 'success') {
-                renderCards(json.data);
-            }
-        } catch (error) {
-            console.error('Gagal memuat data', error);
         }
-    }
 
-    function renderCards(data) {
-        container.innerHTML = ''; // Kosongkan state loading
-        
-        data.forEach(item => {
-            // Logika warna status
-            let statusColor = item.Status === 'Pending Review' ? 'text-amber-500 bg-amber-50' : 'text-green-500 bg-green-50';
+        function renderTable() {
+            const tbody = document.getElementById('tabel-body');
+            tbody.innerHTML = '';
             
-            // Render UI
-            const card = `
-            <div class="bg-white border border-slate-200 rounded-xl p-6 flex flex-col gap-6">
-                <div class="flex justify-between items-start gap-4">
-                    <div>
-                        <h2 class="text-xl font-bold">${item['Nama UMKM']}</h2>
-                        <p class="text-slate-600">Jalur: ${item['Tipe Pendaftar']}</p>
-                        <p class="text-sm text-slate-400 mt-1">ID: ${item['ID Pengajuan']}</p>
-                    </div>
-                    <div class="px-3 py-1 rounded-full border ${statusColor} shrink-0">
-                        <span class="text-sm font-medium">${item['Status']}</span>
-                    </div>
-                </div>
-            </div>`;
-            container.innerHTML += card;
-        });
-    }
+            rawData.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-4">${row['Nomor'] || index + 1}</td>
+                    <td class="p-4">
+                        <span class="font-bold block">${row['Nama Pelaku Usaha']}</span>
+                        <span class="text-xs text-slate-400">${row['ID Pengajuan']}</span>
+                    </td>
+                    <td class="p-4">${row['No Daftar'] || '-'}</td>
+                    <td class="p-4">
+                        <span class="px-2 py-1 bg-blue-50 text-blue-700 rounded-md text-xs">${row['Status SH']}</span>
+                    </td>
+                    <td class="p-4">
+                        <span class="block">${row['Bayar Via'] || '-'}</span>
+                        <span class="text-xs font-semibold ${row['Status Bayar'] === 'Sudah Bayar' ? 'text-green-600' : 'text-red-500'}">${row['Status Bayar'] || ''}</span>
+                    </td>
+                    <td class="p-4">${row['Nama Konsultan'] || '-'}</td>
+                    <td class="p-4">${row['Nama Auditor'] || '-'}</td>
+                    <td class="p-4">
+                        <span class="block">${row['Waktu Audit'] || '-'}</span>
+                        <span class="text-xs text-slate-500 truncate max-w-[150px] block">${row['Keterangan'] || ''}</span>
+                    </td>
+                    <td class="p-4 font-semibold ${row['Fee'] === 'Sudah Bayar' ? 'text-green-600' : 'text-slate-600'}">${row['Fee']}</td>
+                    <td class="p-4">
+                        <button onclick="bukaModalUpdate('${row['ID Pengajuan']}')" class="text-green-600 hover:underline">Edit</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
 
-    // Jalankan saat halaman dimuat
-    loadData();
-</script>
+        function populateDropdowns() {
+            const konsultanSelect = document.getElementById('upd_konsultan');
+            const auditorSelect = document.getElementById('upd_auditor');
+            
+            konsultanSelect.innerHTML = '<option value="">-- Pilih Konsultan --</option>';
+            dbKonsultan.forEach(k => {
+                konsultanSelect.innerHTML += `<option value="${k.id}|${k.nama}">${k.nama}</option>`;
+            });
+
+            auditorSelect.innerHTML = '<option value="">-- Pilih Auditor --</option>';
+            dbAuditor.forEach(a => {
+                auditorSelect.innerHTML += `<option value="${a.id}|${a.nama}">${a.nama}</option>`;
+            });
+        }
+
+        // --- MANAJEMEN MODAL ---
+        function bukaModalBuat() { document.getElementById('modalInsert').classList.remove('hidden'); }
+        function tutupModalInsert() { document.getElementById('modalInsert').classList.add('hidden'); }
+        function tutupModalUpdate() { document.getElementById('modalUpdate').classList.add('hidden'); }
+
+        function bukaModalUpdate(idPengajuan) {
+            const data = rawData.find(r => r['ID Pengajuan'] === idPengajuan);
+            if(!data) return;
+
+            document.getElementById('upd_id_label').innerText = idPengajuan;
+            document.getElementById('upd_id_pengajuan').value = idPengajuan;
+            
+            document.getElementById('upd_no_daftar').value = data['No Daftar'];
+            document.getElementById('upd_status_sh').value = data['Status SH'];
+            document.getElementById('upd_bayar_via').value = data['Bayar Via'];
+            document.getElementById('upd_status_bayar').value = data['Status Bayar'];
+            document.getElementById('upd_waktu').value = data['Waktu Audit'];
+            document.getElementById('upd_keterangan').value = data['Keterangan'];
+            document.getElementById('upd_fee').value = data['Fee'];
+
+            // Set select database
+            if(data['ID Konsultan']) document.getElementById('upd_konsultan').value = `${data['ID Konsultan']}|${data['Nama Konsultan']}`;
+            if(data['ID Auditor']) document.getElementById('upd_auditor').value = `${data['ID Auditor']}|${data['Nama Auditor']}`;
+
+            document.getElementById('modalUpdate').classList.remove('hidden');
+        }
+
+        // --- SUBMIT HANDLERS ---
+        document.getElementById('formInsert').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerText = 'Menyimpan...';
+            btn.disabled = true;
+
+            const payload = {
+                action: 'insert',
+                nama_pu: document.getElementById('ins_nama').value
+            };
+
+            await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+            tutupModalInsert();
+            initDashboard(); // Reload data
+            btn.innerText = 'Simpan';
+            btn.disabled = false;
+            e.target.reset();
+        });
+
+        document.getElementById('formUpdate').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerText = 'Mengupdate...';
+            btn.disabled = true;
+
+            // Split ID dan Nama dari value dropdown
+            const valKons = document.getElementById('upd_konsultan').value.split('|');
+            const valAud = document.getElementById('upd_auditor').value.split('|');
+
+            const payload = {
+                action: 'update',
+                id_pengajuan: document.getElementById('upd_id_pengajuan').value,
+                no_daftar: document.getElementById('upd_no_daftar').value,
+                status_sh: document.getElementById('upd_status_sh').value,
+                bayar_via: document.getElementById('upd_bayar_via').value,
+                status_bayar: document.getElementById('upd_status_bayar').value,
+                waktu_audit: document.getElementById('upd_waktu').value,
+                keterangan: document.getElementById('upd_keterangan').value,
+                fee: document.getElementById('upd_fee').value,
+                id_konsultan: valKons[0] || '',
+                nama_konsultan: valKons[1] || '',
+                id_auditor: valAud[0] || '',
+                nama_auditor: valAud[1] || ''
+            };
+
+            await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+            tutupModalUpdate();
+            initDashboard(); // Reload data
+            btn.innerText = 'Update Data';
+            btn.disabled = false;
+        });
+
+        // Inisialisasi awal
+        initDashboard();
+    </script>
 </body>
 </html>
