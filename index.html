@@ -1,48 +1,67 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HalalCertify - Dashboard UMKM</title>
-    <!-- Menggunakan Tailwind CSS untuk desain modern dan responsif -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 24.8.1.2 (Linux)"/>
+	<meta name="created" content="00:00:00"/>
+	<meta name="changed" content="00:00:00"/>
+	<style type="text/css">
+		@page { size: 8.27in 11.69in; margin: 0.79in }
+		p { line-height: 115%; margin-bottom: 0.1in; background: transparent }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "NSimSun", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+	</style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans">
+<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><pre class="western">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;id&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;HalalCertify - Dashboard UMKM&lt;/title&gt;
+    &lt;!-- Menggunakan Tailwind CSS untuk desain modern dan responsif --&gt;
+    &lt;script src=&quot;https://cdn.tailwindcss.com&quot;&gt;&lt;/script&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot;&gt;
+&lt;/head&gt;
+&lt;body class=&quot;bg-gray-50 text-gray-800 font-sans&quot;&gt;
     
-    <div class="container mx-auto p-6 max-w-6xl">
-        <h1 class="text-3xl font-bold mb-8 text-green-700">Dashboard Sertifikasi Halal</h1>
+    &lt;div class=&quot;container mx-auto p-6 max-w-6xl&quot;&gt;
+        &lt;h1 class=&quot;text-3xl font-bold mb-8 text-green-700&quot;&gt;Dashboard Sertifikasi Halal&lt;/h1&gt;
         
-        <!-- Form Pengajuan Awal -->
-        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-8">
-            <h2 class="text-xl font-semibold mb-4">Pengajuan Baru</h2>
-            <form id="formPengajuan" class="flex gap-4">
-                <input type="text" id="namaUsaha" placeholder="Nama Pelaku Usaha" required 
-                       class="flex-1 p-2 border border-gray-300 rounded focus:outline-none focus:border-green-500">
-                <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition">Ajukan</button>
-            </form>
-        </div>
+        &lt;!-- Form Pengajuan Awal --&gt;
+        &lt;div class=&quot;bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-8&quot;&gt;
+            &lt;h2 class=&quot;text-xl font-semibold mb-4&quot;&gt;Pengajuan Baru&lt;/h2&gt;
+            &lt;form id=&quot;formPengajuan&quot; class=&quot;flex gap-4&quot;&gt;
+                &lt;input type=&quot;text&quot; id=&quot;namaUsaha&quot; placeholder=&quot;Nama Pelaku Usaha&quot; required 
+                       class=&quot;flex-1 p-2 border border-gray-300 rounded focus:outline-none focus:border-green-500&quot;&gt;
+                &lt;button type=&quot;submit&quot; class=&quot;bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition&quot;&gt;Ajukan&lt;/button&gt;
+            &lt;/form&gt;
+        &lt;/div&gt;
 
-        <!-- Tabel Dashboard -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-gray-100 text-gray-600 text-sm uppercase">
-                        <th class="p-4 border-b">Nama Usaha</th>
-                        <th class="p-4 border-b">No Daftar</th>
-                        <th class="p-4 border-b">Status SH</th>
-                        <th class="p-4 border-b">Auditor</th>
-                        <th class="p-4 border-b">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <!-- Data akan dimuat dari script.js -->
-                    <tr><td colspan="5" class="p-4 text-center text-gray-500">Memuat data...</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+        &lt;!-- Tabel Dashboard --&gt;
+        &lt;div class=&quot;bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto&quot;&gt;
+            &lt;table class=&quot;w-full text-left border-collapse&quot;&gt;
+                &lt;thead&gt;
+                    &lt;tr class=&quot;bg-gray-100 text-gray-600 text-sm uppercase&quot;&gt;
+                        &lt;th class=&quot;p-4 border-b&quot;&gt;Nama Usaha&lt;/th&gt;
+                        &lt;th class=&quot;p-4 border-b&quot;&gt;No Daftar&lt;/th&gt;
+                        &lt;th class=&quot;p-4 border-b&quot;&gt;Status SH&lt;/th&gt;
+                        &lt;th class=&quot;p-4 border-b&quot;&gt;Auditor&lt;/th&gt;
+                        &lt;th class=&quot;p-4 border-b&quot;&gt;Aksi&lt;/th&gt;
+                    &lt;/tr&gt;
+                &lt;/thead&gt;
+                &lt;tbody id=&quot;tableBody&quot;&gt;
+                    &lt;!-- Data akan dimuat dari script.js --&gt;
+                    &lt;tr&gt;&lt;td colspan=&quot;5&quot; class=&quot;p-4 text-center text-gray-500&quot;&gt;Memuat data...&lt;/td&gt;&lt;/tr&gt;
+                &lt;/tbody&gt;
+            &lt;/table&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
 
-    <script src="script.js"></script>
+    &lt;script src=&quot;script.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
 </body>
 </html>
