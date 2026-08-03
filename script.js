@@ -1,5 +1,5 @@
 // GANTI DENGAN URL WEB APP DARI APPS SCRIPT ANDA
-const GAS_URL = "https://script.google.com/macros/s/AKfycb.../exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxYzd3uw5h1km_ZbKg7ultOF9INs8Uwo_RrS621c7YgEkkkR9HEG0PYy8cHDtd1_tFm/exec";
 
 // Fetch dan Tampilkan Data ke Tabel
 async function loadData() {
