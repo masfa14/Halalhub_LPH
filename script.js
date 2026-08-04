@@ -155,18 +155,34 @@ function editPengajuan(id) {
     const data = globalData.pengajuan.find(p => p["ID Pengajuan"] === id);
     if (!data) return;
     
+    // 1. Muat data ke Dropdown Nama Konsultan
+    const selKonsultan = document.getElementById('u_namaKonsultan');
+    selKonsultan.innerHTML = '<option value="" data-id="">-- Pilih Konsultan --</option>';
+    globalData.konsultan.forEach(k => {
+        selKonsultan.innerHTML += `<option value="${k["Nama Konsultan"]}" data-id="${k["ID Konsultan"]}">${k["Nama Konsultan"]}</option>`;
+    });
+
+    // 2. Muat data ke Dropdown Nama Auditor
+    const selAuditor = document.getElementById('u_namaAuditor');
+    selAuditor.innerHTML = '<option value="" data-id="">-- Pilih Auditor --</option>';
+    globalData.auditor.forEach(a => {
+        selAuditor.innerHTML += `<option value="${a["Nama Auditor"]}" data-id="${a["ID Auditor"]}">${a["Nama Auditor"]}</option>`;
+    });
+
+    // 3. Isi nilai form dengan data yang sudah ada sebelumnya
     document.getElementById('u_idPengajuan').value = id;
     document.getElementById('u_namaUsaha').innerText = "- " + data["Nama Pelaku Usaha"];
     document.getElementById('u_noDaftar').value = data["Nomor Daftar"] || '';
     document.getElementById('u_statusSH').value = data["Status SH"] || 'Draf PU';
     document.getElementById('u_bayarVia').value = data["Bayar Via"] || 'SiHalal';
     document.getElementById('u_statusBayar').value = data["Status Bayar"] || 'Belum Bayar';
-    document.getElementById('u_idKonsultan').value = data["ID Konsultan"] || '';
-    document.getElementById('u_namaKonsultan').value = data["Nama Konsultan"] || '';
-    document.getElementById('u_idAuditor').value = data["ID Auditor"] || '';
-    document.getElementById('u_namaAuditor').value = data["Nama Auditor"] || '';
     document.getElementById('u_keterangan').value = data["Keterangan"] || '';
     document.getElementById('u_fee').value = data["Fee"] || 'Belum Bayar';
+        // Set nilai untuk dropdown dan text ID-nya
+    document.getElementById('u_namaKonsultan').value = data["Nama Konsultan"] || '';
+    document.getElementById('u_idKonsultan').value = data["ID Konsultan"] || '';
+    document.getElementById('u_namaAuditor').value = data["Nama Auditor"] || '';
+    document.getElementById('u_idAuditor').value = data["ID Auditor"] || '';
     
     document.getElementById('modal-pengajuan').classList.remove('hidden');
 }
@@ -219,5 +235,16 @@ document.getElementById('formMaster').addEventListener('submit', (e) => {
     sendAction(fd);
     closeModal('modal-master');
 });
+// FUNGSI AUTO-FILL ID BERDASARKAN NAMA YANG DIPILIH
+function autoFillKonsultan() {
+    const select = document.getElementById('u_namaKonsultan');
+    const selectedOption = select.options[select.selectedIndex];
+    document.getElementById('u_idKonsultan').value = selectedOption.getAttribute('data-id') || '';
+}
 
+function autoFillAuditor() {
+    const select = document.getElementById('u_namaAuditor');
+    const selectedOption = select.options[select.selectedIndex];
+    document.getElementById('u_idAuditor').value = selectedOption.getAttribute('data-id') || '';
+}
 window.onload = loadData;
