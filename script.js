@@ -1,5 +1,5 @@
 // GANTI DENGAN URL WEB APP TERBARU ANDA (Setelah deploy ulang)
-const GAS_URL = "https://script.google.com/macros/s/AKfycb.../exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwzPuEeO-CVoha2cmzS8txqw5o7rPYy6CxUboifSlY2m7DtMZQFuGsqCaLOYRqfaEq-/exec";
 
 let globalData = { pengajuan: [], konsultan: [], auditor: [] };
 
