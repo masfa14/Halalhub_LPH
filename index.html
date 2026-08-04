@@ -3,155 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HalalCertify - Dashboard UMKM</title>
+    <title>Halal Hub LPH - Platform Layanan Sertifikasi Halal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Menghilangkan scrollbar bawaan agar tampilan menu HP lebih bersih */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans relative">
+<body class="bg-[#f2faee] text-gray-800 font-sans relative pb-24">
     
-    <!-- Navbar (Responsif dengan Horizontal Scroll di HP) -->
-    <nav class="bg-green-700 text-white shadow-md relative z-10">
-        <div class="container mx-auto max-w-6xl p-4">
-            <h1 class="text-2xl font-bold mb-3 md:mb-0 md:mr-8 md:inline-block">HalalCertify</h1>
-            <div class="flex space-x-2 overflow-x-auto pb-1 md:inline-flex md:pb-0 hide-scrollbar">
-                <button onclick="switchTab('dashboard')" class="whitespace-nowrap hover:bg-green-600 px-4 py-2 rounded transition bg-green-800 md:bg-transparent">Dashboard</button>
-                <button onclick="switchTab('pengajuan')" class="whitespace-nowrap hover:bg-green-600 px-4 py-2 rounded transition">Pengajuan</button>
-                <button onclick="switchTab('konsultan')" class="whitespace-nowrap hover:bg-green-600 px-4 py-2 rounded transition">Konsultan</button>
-                <button onclick="switchTab('auditor')" class="whitespace-nowrap hover:bg-green-600 px-4 py-2 rounded transition">Auditor</button>
-            </div>
+    <!-- Top Bar (Header) -->
+    <div class="bg-white px-5 py-4 flex justify-between items-center shadow-sm">
+        <div class="flex items-center gap-2">
+            <h1 class="text-xl font-bold text-green-800">HalalCertify</h1>
         </div>
-    </nav>
+        <div class="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+            Mode Admin
+        </div>
+    </div>
 
     <!-- Notifikasi Loading -->
-    <div id="loading" class="hidden fixed top-4 right-4 bg-blue-600 text-white px-4 py-2 rounded shadow z-50 text-sm md:text-base">Sedang memproses...</div>
+    <div id="loading" class="hidden fixed top-20 right-4 bg-green-600 text-white px-4 py-2 rounded-full shadow-lg z-50 text-sm">Memuat data...</div>
 
-    <div class="container mx-auto p-4 md:p-6 max-w-6xl mt-2 md:mt-4">
+    <!-- Konten Utama -->
+    <div class="container mx-auto p-4 md:p-6 max-w-6xl">
         
-        <!-- DASHBOARD -->
+        <!-- TAB: DASHBOARD -->
         <div id="tab-dashboard" class="tab-content">
-            <h2 class="text-lg md:text-xl font-bold mb-4 md:mb-6">Ringkasan Sistem</h2>
-            <!-- Grid responsif: 1 kolom di HP, 3 kolom di Laptop -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
-                <div class="bg-white p-5 rounded shadow-sm border-l-4 border-blue-500">
-                    <p class="text-xs md:text-sm text-gray-500">Total Pengajuan</p><h3 class="text-2xl md:text-3xl font-bold" id="count-total">0</h3>
+            <h2 class="text-lg font-bold mb-4">Ringkasan Bulan Ini</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mb-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-blue-600" id="count-total">0</h3>
+                    <p class="text-xs text-gray-500 mt-1">Total Pengajuan</p>
                 </div>
-                <div class="bg-white p-5 rounded shadow-sm border-l-4 border-yellow-500">
-                    <p class="text-xs md:text-sm text-gray-500">Sedang Diproses</p><h3 class="text-2xl md:text-3xl font-bold" id="count-proses">0</h3>
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+                    <div class="w-10 h-10 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center mb-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-yellow-600" id="count-proses">0</h3>
+                    <p class="text-xs text-gray-500 mt-1">Diproses</p>
                 </div>
-                <div class="bg-white p-5 rounded shadow-sm border-l-4 border-green-500">
-                    <p class="text-xs md:text-sm text-gray-500">Terbit SH</p><h3 class="text-2xl md:text-3xl font-bold" id="count-selesai">0</h3>
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center col-span-2 md:col-span-1">
+                    <div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-green-600" id="count-selesai">0</h3>
+                    <p class="text-xs text-gray-500 mt-1">Terbit SH</p>
                 </div>
-            </div>
-            
-            <!-- Form Cepat Pengajuan (Responsif: Menyusun ke bawah di HP) -->
-            <div class="bg-white p-5 md:p-6 rounded border mb-8 shadow-sm">
-                <h2 class="text-base md:text-lg font-semibold mb-4">Pengajuan Cepat</h2>
-                <form id="formPengajuanBaru" class="flex flex-col md:flex-row gap-3 md:gap-4">
-                    <input type="text" id="namaUsahaBaru" placeholder="Nama Pelaku Usaha" required class="flex-1 p-3 md:p-2 border rounded focus:outline-none focus:border-green-500">
-                    <button type="submit" class="bg-green-600 text-white px-6 py-3 md:py-2 rounded font-medium hover:bg-green-700 transition">Tambah Data</button>
-                </form>
             </div>
         </div>
 
-        <!-- PENGAJUAN -->
+        <!-- TAB: PENGAJUAN -->
         <div id="tab-pengajuan" class="tab-content hidden">
-            <h2 class="text-lg md:text-xl font-bold mb-4">Data Pengajuan UMKM</h2>
-            <div class="bg-white rounded shadow-sm border overflow-x-auto hide-scrollbar">
+            <h2 class="text-lg font-bold mb-4">Data Pengajuan UMKM</h2>
+            <div class="bg-white rounded-2xl shadow-sm border overflow-x-auto hide-scrollbar p-2">
                 <table class="w-full text-left border-collapse min-w-[600px]">
-                    <thead><tr class="bg-gray-100"><th class="p-4 border-b whitespace-nowrap">Nama Usaha</th><th class="p-4 border-b whitespace-nowrap">No Daftar</th><th class="p-4 border-b whitespace-nowrap">Status</th><th class="p-4 border-b whitespace-nowrap">Auditor</th><th class="p-4 border-b whitespace-nowrap">Aksi</th></tr></thead>
+                    <thead><tr class="text-gray-500 text-sm border-b"><th class="p-4 font-medium">Nama Usaha</th><th class="p-4 font-medium">Status</th><th class="p-4 font-medium">Auditor</th><th class="p-4 font-medium">Aksi</th></tr></thead>
                     <tbody id="table-pengajuan"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- KONSULTAN -->
+        <!-- TAB: KONSULTAN -->
         <div id="tab-konsultan" class="tab-content hidden">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
-                <h2 class="text-lg md:text-xl font-bold">Database Konsultan</h2>
-                <button onclick="openModalMaster('konsultan', 'add')" class="bg-blue-600 text-white px-4 py-2 rounded text-sm w-full md:w-auto">Tambah Konsultan</button>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold">Database Konsultan</h2>
+                <button onclick="openModalMaster('konsultan', 'add')" class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">Tambah</button>
             </div>
-            <div class="bg-white rounded border overflow-x-auto hide-scrollbar">
+            <div class="bg-white rounded-2xl shadow-sm border overflow-x-auto hide-scrollbar p-2">
                 <table class="w-full text-left min-w-[400px]"><tbody id="table-konsultan"></tbody></table>
             </div>
         </div>
 
-        <!-- AUDITOR -->
+        <!-- TAB: AUDITOR -->
         <div id="tab-auditor" class="tab-content hidden">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
-                <h2 class="text-lg md:text-xl font-bold">Database Auditor</h2>
-                <button onclick="openModalMaster('auditor', 'add')" class="bg-blue-600 text-white px-4 py-2 rounded text-sm w-full md:w-auto">Tambah Auditor</button>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold">Database Auditor</h2>
+                <button onclick="openModalMaster('auditor', 'add')" class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">Tambah</button>
             </div>
-            <div class="bg-white rounded border overflow-x-auto hide-scrollbar">
+            <div class="bg-white rounded-2xl shadow-sm border overflow-x-auto hide-scrollbar p-2">
                 <table class="w-full text-left min-w-[400px]"><tbody id="table-auditor"></tbody></table>
             </div>
         </div>
-
     </div>
 
-    <!-- MODAL UPDATE PENGAJUAN -->
-    <div id="modal-pengajuan" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 p-4">
-        <!-- Form scrollable untuk layar HP kecil (max-h-[90vh] dan overflow-y-auto) -->
-        <div class="bg-white rounded-lg p-5 md:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <!-- BOTTOM NAVIGATION BAR -->
+    <div class="fixed bottom-0 w-full bg-white rounded-t-[32px] shadow-[0_-10px_20px_rgba(0,0,0,0.05)] z-40 px-2 pb-2 pt-3">
+        <div class="flex justify-around items-end relative">
+            
+            <button onclick="switchTab('dashboard', this)" class="nav-btn flex flex-col items-center flex-1 text-green-700 transition">
+                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <span class="text-[10px] font-medium">Beranda</span>
+            </button>
+            
+            <button onclick="switchTab('pengajuan', this)" class="nav-btn flex flex-col items-center flex-1 text-gray-400 transition">
+                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span class="text-[10px] font-medium">Pengajuan</span>
+            </button>
+
+            <!-- FLOATING CENTER BUTTON (TAMBAH PENGAJUAN) -->
+            <div class="flex-1 flex justify-center relative">
+                <button onclick="openModalTambah()" class="absolute bottom-4 bg-green-700 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-[0_8px_15px_rgba(21,128,61,0.4)] border-4 border-[#f2faee] hover:bg-green-800 transition transform hover:scale-105 z-50">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                </button>
+            </div>
+
+            <button onclick="switchTab('konsultan', this)" class="nav-btn flex flex-col items-center flex-1 text-gray-400 transition">
+                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <span class="text-[10px] font-medium">Konsultan</span>
+            </button>
+
+            <button onclick="switchTab('auditor', this)" class="nav-btn flex flex-col items-center flex-1 text-gray-400 transition">
+                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                <span class="text-[10px] font-medium">Auditor</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL TAMBAH PENGAJUAN BARU (Dipindahkan ke Popup) -->
+    <div id="modal-tambah-pengajuan" class="hidden fixed inset-0 bg-gray-900 bg-opacity-40 flex flex-col justify-end md:justify-center z-50">
+        <div class="bg-white rounded-t-3xl md:rounded-3xl p-6 w-full max-w-lg mx-auto transform transition-transform">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Pengajuan Baru</h2>
+                <button onclick="closeModal('modal-tambah-pengajuan')" class="text-gray-400 p-2"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <form id="formPengajuanBaru" class="flex flex-col gap-4">
+                <div>
+                    <label class="text-sm text-gray-500 mb-1 block">Nama Pelaku Usaha</label>
+                    <input type="text" id="namaUsahaBaru" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition">
+                </div>
+                <button type="submit" class="bg-green-700 text-white p-3 rounded-xl font-bold hover:bg-green-800 transition w-full mt-2">Buat Pengajuan</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL UPDATE PENGAJUAN (Sama seperti sebelumnya, disesuaikan bordernya) -->
+    <div id="modal-pengajuan" class="hidden fixed inset-0 bg-gray-900 bg-opacity-40 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-5 md:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <h2 class="text-lg md:text-xl font-bold mb-4">Update <span id="u_namaUsaha" class="text-green-600"></span></h2>
             <form id="formUpdatePengajuan" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input type="hidden" id="u_idPengajuan">
+                <div><label class="text-sm text-gray-500">Nomor Daftar</label><input type="text" id="u_noDaftar" class="w-full p-2 border rounded-xl bg-gray-50"></div>
+                <div><label class="text-sm text-gray-500">Status SH</label><select id="u_statusSH" class="w-full p-2 border rounded-xl bg-gray-50"><option>Draf PU</option><option>Submitted PU</option><option>Verified</option><option>Dikembalikan PU</option><option>Dikirim ke LPH</option><option>Dibatalkan</option><option>Pembayaran</option><option>Review LPH</option><option>Dikirim ke Komisi Fatwa</option><option>Terbit SH</option><option>Proses di LPH</option><option>Penetapan Biaya</option></select></div>
+                <div><label class="text-sm text-gray-500">Bayar Via</label><select id="u_bayarVia" class="w-full p-2 border rounded-xl bg-gray-50"><option>SiHalal</option><option>LPH</option></select></div>
+                <div><label class="text-sm text-gray-500">Status Bayar</label><select id="u_statusBayar" class="w-full p-2 border rounded-xl bg-gray-50"><option>Belum Bayar</option><option>Sudah Bayar</option></select></div>
+                <div><label class="text-sm text-gray-500">ID Konsultan</label><input type="text" id="u_idKonsultan" class="w-full p-2 border rounded-xl bg-gray-50"></div>
+                <div><label class="text-sm text-gray-500">Nama Konsultan</label><input type="text" id="u_namaKonsultan" class="w-full p-2 border rounded-xl bg-gray-50"></div>
+                <div><label class="text-sm text-gray-500">ID Auditor</label><input type="text" id="u_idAuditor" class="w-full p-2 border rounded-xl bg-gray-50"></div>
+                <div><label class="text-sm text-gray-500">Nama Auditor</label><input type="text" id="u_namaAuditor" class="w-full p-2 border rounded-xl bg-gray-50"></div>
+                <div><label class="text-sm text-gray-500">Keterangan</label><input type="text" id="u_keterangan" class="w-full p-2 border rounded-xl bg-gray-50"></div>
+                <div><label class="text-sm text-gray-500">Fee</label><select id="u_fee" class="w-full p-2 border rounded-xl bg-gray-50"><option>Belum Bayar</option><option>Sudah Bayar</option></select></div>
                 
-                <div><label class="text-sm text-gray-600">Nomor Daftar</label><input type="text" id="u_noDaftar" class="w-full p-3 md:p-2 border rounded"></div>
-                <div>
-                    <label class="text-sm text-gray-600">Status SH</label>
-                    <select id="u_statusSH" class="w-full p-3 md:p-2 border rounded bg-white">
-                        <option>Draf PU</option><option>Submitted PU</option><option>Verified</option><option>Dikembalikan PU</option><option>Dikirim ke LPH</option><option>Dibatalkan</option><option>Pembayaran</option><option>Review LPH</option><option>Dikirim ke Komisi Fatwa</option><option>Terbit SH</option><option>Proses di LPH</option><option>Penetapan Biaya</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-sm text-gray-600">Bayar Via</label>
-                    <select id="u_bayarVia" class="w-full p-3 md:p-2 border rounded bg-white"><option>SiHalal</option><option>LPH</option></select>
-                </div>
-                <div>
-                    <label class="text-sm text-gray-600">Status Bayar</label>
-                    <select id="u_statusBayar" class="w-full p-3 md:p-2 border rounded bg-white"><option>Belum Bayar</option><option>Sudah Bayar</option></select>
-                </div>
-                
-                <div><label class="text-sm text-gray-600">ID Konsultan</label><input type="text" id="u_idKonsultan" class="w-full p-3 md:p-2 border rounded"></div>
-                <div><label class="text-sm text-gray-600">Nama Konsultan</label><input type="text" id="u_namaKonsultan" class="w-full p-3 md:p-2 border rounded"></div>
-                <div><label class="text-sm text-gray-600">ID Auditor</label><input type="text" id="u_idAuditor" class="w-full p-3 md:p-2 border rounded"></div>
-                <div><label class="text-sm text-gray-600">Nama Auditor</label><input type="text" id="u_namaAuditor" class="w-full p-3 md:p-2 border rounded"></div>
-                
-                <div><label class="text-sm text-gray-600">Keterangan</label><input type="text" id="u_keterangan" class="w-full p-3 md:p-2 border rounded"></div>
-                <div>
-                    <label class="text-sm text-gray-600">Fee</label>
-                    <select id="u_fee" class="w-full p-3 md:p-2 border rounded bg-white"><option>Belum Bayar</option><option>Sudah Bayar</option></select>
-                </div>
-                
-                <div class="col-span-1 md:col-span-2 flex flex-col md:flex-row justify-end gap-3 mt-2 md:mt-4">
-                    <button type="button" onclick="closeModal('modal-pengajuan')" class="px-4 py-3 md:py-2 text-gray-600 border rounded hover:bg-gray-100 font-medium">Batal</button>
-                    <button type="submit" class="px-4 py-3 md:py-2 bg-green-600 text-white rounded hover:bg-green-700 font-medium">Simpan Perubahan</button>
+                <div class="col-span-1 md:col-span-2 flex flex-col md:flex-row justify-end gap-3 mt-2">
+                    <button type="button" onclick="closeModal('modal-pengajuan')" class="px-5 py-2 text-gray-600 bg-gray-100 rounded-xl font-medium">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-green-700 text-white rounded-xl font-bold hover:bg-green-800">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- MODAL MASTER (KONSULTAN/AUDITOR) -->
-    <div id="modal-master" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 p-4">
-        <div class="bg-white rounded-lg p-5 md:p-6 w-full max-w-sm">
-            <h2 id="master-title" class="text-lg md:text-xl font-bold mb-4">Master Form</h2>
+    <div id="modal-master" class="hidden fixed inset-0 bg-gray-900 bg-opacity-40 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-sm">
+            <h2 id="master-title" class="text-xl font-bold mb-4">Master Form</h2>
             <form id="formMaster">
                 <input type="hidden" id="m_type"><input type="hidden" id="m_action">
-                <div class="mb-4">
-                    <label class="text-sm text-gray-600">ID</label>
-                    <input type="text" id="m_id" class="w-full p-3 md:p-2 border rounded" required>
+                <div class="mb-3">
+                    <label class="text-sm text-gray-500">ID</label>
+                    <input type="text" id="m_id" class="w-full p-3 bg-gray-50 border rounded-xl" required>
                 </div>
-                <div class="mb-4">
-                    <label class="text-sm text-gray-600">Nama</label>
-                    <input type="text" id="m_nama" class="w-full p-3 md:p-2 border rounded" required>
+                <div class="mb-5">
+                    <label class="text-sm text-gray-500">Nama</label>
+                    <input type="text" id="m_nama" class="w-full p-3 bg-gray-50 border rounded-xl" required>
                 </div>
-                <div class="flex flex-col md:flex-row justify-end gap-3 mt-2">
-                    <button type="button" onclick="closeModal('modal-master')" class="px-4 py-3 md:py-2 text-gray-600 border rounded font-medium">Batal</button>
-                    <button type="submit" class="px-4 py-3 md:py-2 bg-blue-600 text-white rounded font-medium">Simpan</button>
+                <div class="flex flex-col md:flex-row justify-end gap-3">
+                    <button type="button" onclick="closeModal('modal-master')" class="px-4 py-2 text-gray-600 bg-gray-100 rounded-xl font-medium">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-xl font-bold">Simpan</button>
                 </div>
             </form>
         </div>
