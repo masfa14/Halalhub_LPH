@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Halal Hub LPH - Platform Layanan Sertifikasi Halal</title>
+    <title>Halal Hub - Dashboard UMKM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .hide-scrollbar::-webkit-scrollbar { display: none; }
@@ -15,10 +15,7 @@
     <!-- Top Bar (Header) -->
     <div class="bg-white px-5 py-4 flex justify-between items-center shadow-sm">
         <div class="flex items-center gap-2">
-            <h1 class="text-xl font-bold text-green-800">HalalCertify</h1>
-        </div>
-        <div class="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-            Mode Admin
+            <h1 class="text-xl font-bold text-green-800">Halal Hub</h1>
         </div>
     </div>
 
@@ -58,7 +55,14 @@
 
         <!-- TAB: PENGAJUAN -->
         <div id="tab-pengajuan" class="tab-content hidden">
-            <h2 class="text-lg font-bold mb-4">Data Pengajuan UMKM</h2>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
+                <h2 class="text-lg font-bold">Data Pengajuan UMKM</h2>
+                <!-- FITUR SEARCH -->
+                <div class="flex w-full md:w-auto gap-2">
+                    <input type="text" id="searchPengajuan" onkeyup="if(event.key === 'Enter') cariPengajuan()" placeholder="Cari Nama Usaha..." class="w-full md:w-64 p-2 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 text-sm">
+                    <button onclick="cariPengajuan()" class="bg-green-100 text-green-700 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-green-200 transition">Cari</button>
+                </div>
+            </div>
             <div class="bg-white rounded-2xl shadow-sm border overflow-x-auto hide-scrollbar p-2">
                 <table class="w-full text-left border-collapse min-w-[600px]">
                     <thead><tr class="text-gray-500 text-sm border-b"><th class="p-4 font-medium">Nama Usaha</th><th class="p-4 font-medium">Status</th><th class="p-4 font-medium">Auditor</th><th class="p-4 font-medium">Aksi</th></tr></thead>
@@ -93,7 +97,6 @@
     <!-- BOTTOM NAVIGATION BAR -->
     <div class="fixed bottom-0 w-full bg-white rounded-t-[32px] shadow-[0_-10px_20px_rgba(0,0,0,0.05)] z-40 px-2 pb-2 pt-3">
         <div class="flex justify-around items-end relative">
-            
             <button onclick="switchTab('dashboard', this)" class="nav-btn flex flex-col items-center flex-1 text-green-700 transition">
                 <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 <span class="text-[10px] font-medium">Beranda</span>
@@ -104,7 +107,7 @@
                 <span class="text-[10px] font-medium">Pengajuan</span>
             </button>
 
-            <!-- FLOATING CENTER BUTTON (TAMBAH PENGAJUAN) -->
+            <!-- FLOATING CENTER BUTTON -->
             <div class="flex-1 flex justify-center relative">
                 <button onclick="openModalTambah()" class="absolute bottom-4 bg-green-700 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-[0_8px_15px_rgba(21,128,61,0.4)] border-4 border-[#f2faee] hover:bg-green-800 transition transform hover:scale-105 z-50">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
@@ -123,14 +126,18 @@
         </div>
     </div>
 
-    <!-- MODAL TAMBAH PENGAJUAN BARU (Dipindahkan ke Popup) -->
+    <!-- MODAL TAMBAH PENGAJUAN BARU -->
     <div id="modal-tambah-pengajuan" class="hidden fixed inset-0 bg-gray-900 bg-opacity-40 flex flex-col justify-end md:justify-center z-50">
-        <div class="bg-white rounded-t-3xl md:rounded-3xl p-6 w-full max-w-lg mx-auto transform transition-transform">
+        <div class="bg-white rounded-t-3xl md:rounded-3xl p-6 w-full max-w-lg mx-auto">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-bold">Pengajuan Baru</h2>
                 <button onclick="closeModal('modal-tambah-pengajuan')" class="text-gray-400 p-2"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             <form id="formPengajuanBaru" class="flex flex-col gap-4">
+                <div>
+                    <label class="text-sm text-gray-500 mb-1 block">ID Pengajuan (Otomatis)</label>
+                    <input type="text" id="idPengajuanBaru" readonly class="w-full p-3 bg-gray-100 border border-gray-200 rounded-xl text-gray-500 cursor-not-allowed">
+                </div>
                 <div>
                     <label class="text-sm text-gray-500 mb-1 block">Nama Pelaku Usaha</label>
                     <input type="text" id="namaUsahaBaru" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:bg-white transition">
@@ -140,7 +147,7 @@
         </div>
     </div>
 
-    <!-- MODAL UPDATE PENGAJUAN (Sama seperti sebelumnya, disesuaikan bordernya) -->
+    <!-- MODAL UPDATE PENGAJUAN -->
     <div id="modal-pengajuan" class="hidden fixed inset-0 bg-gray-900 bg-opacity-40 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-3xl p-5 md:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <h2 class="text-lg md:text-xl font-bold mb-4">Update <span id="u_namaUsaha" class="text-green-600"></span></h2>
@@ -172,11 +179,11 @@
             <form id="formMaster">
                 <input type="hidden" id="m_type"><input type="hidden" id="m_action">
                 <div class="mb-3">
-                    <label class="text-sm text-gray-500">ID</label>
-                    <input type="text" id="m_id" class="w-full p-3 bg-gray-50 border rounded-xl" required>
+                    <label class="text-sm text-gray-500">ID (Otomatis)</label>
+                    <input type="text" id="m_id" readonly class="w-full p-3 bg-gray-100 border border-gray-200 text-gray-500 rounded-xl cursor-not-allowed">
                 </div>
                 <div class="mb-5">
-                    <label class="text-sm text-gray-500">Nama</label>
+                    <label class="text-sm text-gray-500">Nama Lengkap</label>
                     <input type="text" id="m_nama" class="w-full p-3 bg-gray-50 border rounded-xl" required>
                 </div>
                 <div class="flex flex-col md:flex-row justify-end gap-3">
