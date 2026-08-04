@@ -151,6 +151,19 @@ document.getElementById('formPengajuanBaru').addEventListener('submit', (e) => {
     e.target.reset();
 });
 
+// FUNGSI AUTO-FILL ID BERDASARKAN NAMA YANG DIPILIH
+function autoFillKonsultan() {
+    const select = document.getElementById('u_namaKonsultan');
+    const selectedOption = select.options[select.selectedIndex];
+    document.getElementById('u_idKonsultan').value = selectedOption.getAttribute('data-id') || '';
+}
+
+function autoFillAuditor() {
+    const select = document.getElementById('u_namaAuditor');
+    const selectedOption = select.options[select.selectedIndex];
+    document.getElementById('u_idAuditor').value = selectedOption.getAttribute('data-id') || '';
+}
+
 function editPengajuan(id) {
     const data = globalData.pengajuan.find(p => p["ID Pengajuan"] === id);
     if (!data) return;
@@ -235,16 +248,5 @@ document.getElementById('formMaster').addEventListener('submit', (e) => {
     sendAction(fd);
     closeModal('modal-master');
 });
-// FUNGSI AUTO-FILL ID BERDASARKAN NAMA YANG DIPILIH
-function autoFillKonsultan() {
-    const select = document.getElementById('u_namaKonsultan');
-    const selectedOption = select.options[select.selectedIndex];
-    document.getElementById('u_idKonsultan').value = selectedOption.getAttribute('data-id') || '';
-}
 
-function autoFillAuditor() {
-    const select = document.getElementById('u_namaAuditor');
-    const selectedOption = select.options[select.selectedIndex];
-    document.getElementById('u_idAuditor').value = selectedOption.getAttribute('data-id') || '';
-}
 window.onload = loadData;
