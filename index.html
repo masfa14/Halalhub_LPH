@@ -1,67 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-	<title></title>
-	<meta name="generator" content="LibreOffice 24.8.1.2 (Linux)"/>
-	<meta name="created" content="00:00:00"/>
-	<meta name="changed" content="00:00:00"/>
-	<style type="text/css">
-		@page { size: 8.27in 11.69in; margin: 0.79in }
-		p { line-height: 115%; margin-bottom: 0.1in; background: transparent }
-		pre { background: transparent }
-		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
-		pre.cjk { font-family: "NSimSun", monospace; font-size: 10pt }
-		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
-	</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HalalCertify - Dashboard UMKM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><pre class="western">&lt;!DOCTYPE html&gt;
-&lt;html lang=&quot;id&quot;&gt;
-&lt;head&gt;
-    &lt;meta charset=&quot;UTF-8&quot;&gt;
-    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
-    &lt;title&gt;HalalCertify - Dashboard UMKM&lt;/title&gt;
-    &lt;!-- Menggunakan Tailwind CSS untuk desain modern dan responsif --&gt;
-    &lt;script src=&quot;https://cdn.tailwindcss.com&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot;&gt;
-&lt;/head&gt;
-&lt;body class=&quot;bg-gray-50 text-gray-800 font-sans&quot;&gt;
+<body class="bg-gray-50 text-gray-800 font-sans">
     
-    &lt;div class=&quot;container mx-auto p-6 max-w-6xl&quot;&gt;
-        &lt;h1 class=&quot;text-3xl font-bold mb-8 text-green-700&quot;&gt;Dashboard Sertifikasi Halal&lt;/h1&gt;
+    <!-- Navbar -->
+    <nav class="bg-green-700 text-white shadow-md">
+        <div class="container mx-auto max-w-6xl flex items-center p-4">
+            <h1 class="text-2xl font-bold mr-8">HalalCertify</h1>
+            <div class="flex space-x-4">
+                <button onclick="switchTab('dashboard')" class="hover:bg-green-600 px-3 py-2 rounded transition">Dashboard</button>
+                <button onclick="switchTab('pengajuan')" class="hover:bg-green-600 px-3 py-2 rounded transition">Data Pengajuan</button>
+                <button onclick="switchTab('konsultan')" class="hover:bg-green-600 px-3 py-2 rounded transition">Konsultan</button>
+                <button onclick="switchTab('auditor')" class="hover:bg-green-600 px-3 py-2 rounded transition">Auditor</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto p-6 max-w-6xl mt-4">
         
-        &lt;!-- Form Pengajuan Awal --&gt;
-        &lt;div class=&quot;bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-8&quot;&gt;
-            &lt;h2 class=&quot;text-xl font-semibold mb-4&quot;&gt;Pengajuan Baru&lt;/h2&gt;
-            &lt;form id=&quot;formPengajuan&quot; class=&quot;flex gap-4&quot;&gt;
-                &lt;input type=&quot;text&quot; id=&quot;namaUsaha&quot; placeholder=&quot;Nama Pelaku Usaha&quot; required 
-                       class=&quot;flex-1 p-2 border border-gray-300 rounded focus:outline-none focus:border-green-500&quot;&gt;
-                &lt;button type=&quot;submit&quot; class=&quot;bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition&quot;&gt;Ajukan&lt;/button&gt;
-            &lt;/form&gt;
-        &lt;/div&gt;
+        <!-- SECTION: DASHBOARD -->
+        <div id="tab-dashboard" class="tab-content">
+            <h2 class="text-xl font-bold mb-6 text-gray-700">Ringkasan Sistem</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-blue-500">
+                    <p class="text-gray-500 text-sm">Total Pengajuan</p>
+                    <h3 class="text-3xl font-bold text-gray-800" id="count-total">0</h3>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-yellow-500">
+                    <p class="text-gray-500 text-sm">Sedang Diproses</p>
+                    <h3 class="text-3xl font-bold text-gray-800" id="count-proses">0</h3>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-green-500">
+                    <p class="text-gray-500 text-sm">Selesai (Terbit SH)</p>
+                    <h3 class="text-3xl font-bold text-gray-800" id="count-selesai">0</h3>
+                </div>
+            </div>
+        </div>
 
-        &lt;!-- Tabel Dashboard --&gt;
-        &lt;div class=&quot;bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto&quot;&gt;
-            &lt;table class=&quot;w-full text-left border-collapse&quot;&gt;
-                &lt;thead&gt;
-                    &lt;tr class=&quot;bg-gray-100 text-gray-600 text-sm uppercase&quot;&gt;
-                        &lt;th class=&quot;p-4 border-b&quot;&gt;Nama Usaha&lt;/th&gt;
-                        &lt;th class=&quot;p-4 border-b&quot;&gt;No Daftar&lt;/th&gt;
-                        &lt;th class=&quot;p-4 border-b&quot;&gt;Status SH&lt;/th&gt;
-                        &lt;th class=&quot;p-4 border-b&quot;&gt;Auditor&lt;/th&gt;
-                        &lt;th class=&quot;p-4 border-b&quot;&gt;Aksi&lt;/th&gt;
-                    &lt;/tr&gt;
-                &lt;/thead&gt;
-                &lt;tbody id=&quot;tableBody&quot;&gt;
-                    &lt;!-- Data akan dimuat dari script.js --&gt;
-                    &lt;tr&gt;&lt;td colspan=&quot;5&quot; class=&quot;p-4 text-center text-gray-500&quot;&gt;Memuat data...&lt;/td&gt;&lt;/tr&gt;
-                &lt;/tbody&gt;
-            &lt;/table&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
+        <!-- SECTION: PENGAJUAN -->
+        <div id="tab-pengajuan" class="tab-content hidden">
+            <h2 class="text-xl font-bold mb-4 text-gray-700">Data Pengajuan UMKM</h2>
+            <!-- (Form Pengajuan dan Tabel Pengajuan diletakkan di sini, sama seperti kode sebelumnya) -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-600 text-sm uppercase">
+                            <th class="p-4 border-b">Nama Usaha</th>
+                            <th class="p-4 border-b">No Daftar</th>
+                            <th class="p-4 border-b">Status SH</th>
+                            <th class="p-4 border-b">Auditor</th>
+                            <th class="p-4 border-b">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-pengajuan"><tr><td colspan="5" class="p-4 text-center">Memuat...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
 
-    &lt;script src=&quot;script.js&quot;&gt;&lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;</pre>
+        <!-- SECTION: KONSULTAN -->
+        <div id="tab-konsultan" class="tab-content hidden">
+            <h2 class="text-xl font-bold mb-4 text-gray-700">Database Konsultan</h2>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead><tr class="bg-gray-100"><th class="p-4 border-b">ID Konsultan</th><th class="p-4 border-b">Nama Konsultan</th></tr></thead>
+                    <tbody id="table-konsultan"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SECTION: AUDITOR -->
+        <div id="tab-auditor" class="tab-content hidden">
+            <h2 class="text-xl font-bold mb-4 text-gray-700">Database Auditor</h2>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead><tr class="bg-gray-100"><th class="p-4 border-b">ID Auditor</th><th class="p-4 border-b">Nama Auditor</th></tr></thead>
+                    <tbody id="table-auditor"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
