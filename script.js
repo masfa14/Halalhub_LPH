@@ -10,6 +10,11 @@ function showLoading(show) {
 function switchTab(tabId) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
     document.getElementById('tab-' + tabId).classList.remove('hidden');
+    
+    // Opsional: Merubah warna tombol aktif di menu navigasi
+    const navButtons = document.querySelectorAll('nav button');
+    navButtons.forEach(btn => btn.classList.remove('bg-green-800'));
+    event.currentTarget.classList.add('bg-green-800');
 }
 
 function closeModal(modalId) {
@@ -44,21 +49,21 @@ function renderDashboard() {
     document.getElementById('count-proses').innerText = data.length - selesai;
 }
 
-// RENDER PENGAJUAN
+// RENDER PENGAJUAN (Ditambah whitespace-nowrap)
 function renderTablePengajuan() {
     const tbody = document.getElementById('table-pengajuan');
     tbody.innerHTML = "";
     globalData.pengajuan.forEach(row => {
         const color = row["Status SH"] === "Terbit SH" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800";
         tbody.innerHTML += `
-            <tr class="border-b hover:bg-gray-50">
-                <td class="p-4">${row["Nama Pelaku Usaha"]}</td>
-                <td class="p-4">${row["Nomor Daftar"] || '-'}</td>
-                <td class="p-4"><span class="px-2 py-1 rounded text-xs ${color}">${row["Status SH"] || 'Draf PU'}</span></td>
-                <td class="p-4">${row["Nama Auditor"] || '-'}</td>
-                <td class="p-4 flex gap-2">
-                    <button onclick="editPengajuan('${row["ID Pengajuan"]}')" class="text-blue-600 text-sm">Edit</button>
-                    <button onclick="hapusData('delete_pengajuan', '${row["ID Pengajuan"]}')" class="text-red-600 text-sm">Hapus</button>
+            <tr class="border-b hover:bg-gray-50 text-sm md:text-base">
+                <td class="p-3 md:p-4 whitespace-nowrap">${row["Nama Pelaku Usaha"]}</td>
+                <td class="p-3 md:p-4 whitespace-nowrap">${row["Nomor Daftar"] || '-'}</td>
+                <td class="p-3 md:p-4 whitespace-nowrap"><span class="px-2 py-1 rounded text-xs ${color}">${row["Status SH"] || 'Draf PU'}</span></td>
+                <td class="p-3 md:p-4 whitespace-nowrap">${row["Nama Auditor"] || '-'}</td>
+                <td class="p-3 md:p-4 whitespace-nowrap flex gap-3">
+                    <button onclick="editPengajuan('${row["ID Pengajuan"]}')" class="text-blue-600 font-medium">Edit</button>
+                    <button onclick="hapusData('delete_pengajuan', '${row["ID Pengajuan"]}')" class="text-red-600 font-medium">Hapus</button>
                 </td>
             </tr>
         `;
@@ -68,23 +73,23 @@ function renderTablePengajuan() {
 // RENDER KONSULTAN / AUDITOR
 function renderTableMaster(type, elementId, columns) {
     const tbody = document.getElementById(elementId);
-    tbody.innerHTML = `<thead><tr class="bg-gray-100"><th class="p-4 border-b">ID</th><th class="p-4 border-b">Nama</th><th class="p-4 border-b w-32">Aksi</th></tr></thead>`;
+    tbody.innerHTML = `<thead><tr class="bg-gray-100"><th class="p-3 md:p-4 border-b whitespace-nowrap">ID</th><th class="p-3 md:p-4 border-b whitespace-nowrap">Nama</th><th class="p-3 md:p-4 border-b w-32 whitespace-nowrap">Aksi</th></tr></thead>`;
     globalData[type].forEach(row => {
         const id = row[columns[0]];
         const nama = row[columns[1]];
         tbody.innerHTML += `
-            <tr class="border-b hover:bg-gray-50">
-                <td class="p-4">${id}</td><td class="p-4">${nama}</td>
-                <td class="p-4 flex gap-2">
-                    <button onclick="openModalMaster('${type}', 'update', '${id}', '${nama}')" class="text-blue-600 text-sm">Edit</button>
-                    <button onclick="hapusData('delete_${type}', '${id}')" class="text-red-600 text-sm">Hapus</button>
+            <tr class="border-b hover:bg-gray-50 text-sm md:text-base">
+                <td class="p-3 md:p-4 whitespace-nowrap">${id}</td>
+                <td class="p-3 md:p-4 whitespace-nowrap">${nama}</td>
+                <td class="p-3 md:p-4 whitespace-nowrap flex gap-3">
+                    <button onclick="openModalMaster('${type}', 'update', '${id}', '${nama}')" class="text-blue-600 font-medium">Edit</button>
+                    <button onclick="hapusData('delete_${type}', '${id}')" class="text-red-600 font-medium">Hapus</button>
                 </td>
             </tr>
         `;
     });
 }
 
-// KIRIM DATA (POST) GENERIC
 async function sendAction(formData) {
     showLoading(true);
     try {
@@ -98,7 +103,6 @@ async function sendAction(formData) {
     showLoading(false);
 }
 
-// HAPUS DATA
 function hapusData(action, id) {
     if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
         const fd = new URLSearchParams();
@@ -108,7 +112,6 @@ function hapusData(action, id) {
     }
 }
 
-// --- LOGIK PENGAJUAN ---
 document.getElementById('formPengajuanBaru').addEventListener('submit', (e) => {
     e.preventDefault();
     const fd = new URLSearchParams();
@@ -158,7 +161,6 @@ document.getElementById('formUpdatePengajuan').addEventListener('submit', (e) =>
     closeModal('modal-pengajuan');
 });
 
-// --- LOGIK KONSULTAN / AUDITOR ---
 function openModalMaster(type, action, id = '', nama = '') {
     document.getElementById('master-title').innerText = action === 'add' ? `Tambah ${type}` : `Edit ${type}`;
     document.getElementById('m_type').value = type;
@@ -166,7 +168,6 @@ function openModalMaster(type, action, id = '', nama = '') {
     document.getElementById('m_id').value = id;
     document.getElementById('m_nama').value = nama;
     
-    // Matikan ID jika mode edit agar tidak diubah
     document.getElementById('m_id').readOnly = (action === 'update');
     document.getElementById('modal-master').classList.remove('hidden');
 }
