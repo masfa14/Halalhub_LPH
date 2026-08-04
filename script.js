@@ -1,143 +1,185 @@
-// GANTI DENGAN URL WEB APP TERBARU DARI APPS SCRIPT ANDA
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxYzd3uw5h1km_ZbKg7ultOF9INs8Uwo_RrS621c7YgEkkkR9HEG0PYy8cHDtd1_tFm/exec";
+// GANTI DENGAN URL WEB APP TERBARU ANDA (Setelah deploy ulang)
+const GAS_URL = "https://script.google.com/macros/s/AKfycb.../exec";
 
-// ==========================================
-// 1. FUNGSI NAVIGASI MENU (TAB)
-// ==========================================
+let globalData = { pengajuan: [], konsultan: [], auditor: [] };
+
+function showLoading(show) {
+    document.getElementById('loading').style.display = show ? 'block' : 'none';
+}
+
 function switchTab(tabId) {
-    // Sembunyikan semua konten tab
     document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-    // Tampilkan tab yang dipilih
     document.getElementById('tab-' + tabId).classList.remove('hidden');
 }
 
-// ==========================================
-// 2. FUNGSI LOAD & TAMPILKAN DATA (READ)
-// ==========================================
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.add('hidden');
+}
+
 async function loadData() {
+    showLoading(true);
     try {
         const response = await fetch(GAS_URL);
         const data = await response.json();
         
         if (data.status === "success") {
-            // Render semua komponen
-            renderDashboard(data.pengajuan);
-            renderTablePengajuan(data.pengajuan);
-            renderTable("table-konsultan", data.konsultan, ["ID Konsultan", "Nama Konsultan"]);
-            renderTable("table-auditor", data.auditor, ["ID Auditor", "Nama Auditor"]);
+            globalData = data;
+            renderDashboard();
+            renderTablePengajuan();
+            renderTableMaster("konsultan", "table-konsultan", ["ID Konsultan", "Nama Konsultan"]);
+            renderTableMaster("auditor", "table-auditor", ["ID Auditor", "Nama Auditor"]);
         }
     } catch (error) {
-        console.error("Gagal memuat data:", error);
+        alert("Gagal memuat data dari server.");
     }
+    showLoading(false);
 }
 
-function renderDashboard(pengajuanData) {
-    const total = pengajuanData.length;
-    const selesai = pengajuanData.filter(p => p["Status SH"] === "Terbit SH").length;
-    const proses = total - selesai; 
-
-    document.getElementById('count-total').innerText = total;
-    document.getElementById('count-proses').innerText = proses;
+// RENDER DASHBOARD
+function renderDashboard() {
+    const data = globalData.pengajuan;
+    const selesai = data.filter(p => p["Status SH"] === "Terbit SH").length;
+    document.getElementById('count-total').innerText = data.length;
     document.getElementById('count-selesai').innerText = selesai;
+    document.getElementById('count-proses').innerText = data.length - selesai;
 }
 
-function renderTablePengajuan(data) {
+// RENDER PENGAJUAN
+function renderTablePengajuan() {
     const tbody = document.getElementById('table-pengajuan');
     tbody.innerHTML = "";
-    
-    if(data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-500">Belum ada data pengajuan</td></tr>`;
-        return;
-    }
-
-    data.forEach(row => {
-        const statusColor = row["Status SH"] === "Terbit SH" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800";
+    globalData.pengajuan.forEach(row => {
+        const color = row["Status SH"] === "Terbit SH" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800";
         tbody.innerHTML += `
-            <tr class="border-b hover:bg-gray-50 transition">
-                <td class="p-4 font-medium text-gray-900">${row["Nama Pelaku Usaha"]}</td>
-                <td class="p-4 text-gray-600">${row["Nomor Daftar"] || '-'}</td>
-                <td class="p-4">
-                    <span class="px-2 py-1 rounded text-xs font-semibold ${statusColor}">
-                        ${row["Status SH"] || 'Draf PU'}
-                    </span>
-                </td>
-                <td class="p-4 text-gray-600">${row["Nama Auditor"] || 'Belum ditugaskan'}</td>
-                <td class="p-4">
-                    <button onclick="editData('${row["ID Pengajuan"]}')" class="text-blue-600 hover:underline text-sm">Update</button>
+            <tr class="border-b hover:bg-gray-50">
+                <td class="p-4">${row["Nama Pelaku Usaha"]}</td>
+                <td class="p-4">${row["Nomor Daftar"] || '-'}</td>
+                <td class="p-4"><span class="px-2 py-1 rounded text-xs ${color}">${row["Status SH"] || 'Draf PU'}</span></td>
+                <td class="p-4">${row["Nama Auditor"] || '-'}</td>
+                <td class="p-4 flex gap-2">
+                    <button onclick="editPengajuan('${row["ID Pengajuan"]}')" class="text-blue-600 text-sm">Edit</button>
+                    <button onclick="hapusData('delete_pengajuan', '${row["ID Pengajuan"]}')" class="text-red-600 text-sm">Hapus</button>
                 </td>
             </tr>
         `;
     });
 }
 
-function renderTable(elementId, data, columns) {
+// RENDER KONSULTAN / AUDITOR
+function renderTableMaster(type, elementId, columns) {
     const tbody = document.getElementById(elementId);
-    tbody.innerHTML = "";
-    
-    if(data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="${columns.length}" class="p-4 text-center text-gray-500">Data kosong</td></tr>`;
-        return;
+    tbody.innerHTML = `<thead><tr class="bg-gray-100"><th class="p-4 border-b">ID</th><th class="p-4 border-b">Nama</th><th class="p-4 border-b w-32">Aksi</th></tr></thead>`;
+    globalData[type].forEach(row => {
+        const id = row[columns[0]];
+        const nama = row[columns[1]];
+        tbody.innerHTML += `
+            <tr class="border-b hover:bg-gray-50">
+                <td class="p-4">${id}</td><td class="p-4">${nama}</td>
+                <td class="p-4 flex gap-2">
+                    <button onclick="openModalMaster('${type}', 'update', '${id}', '${nama}')" class="text-blue-600 text-sm">Edit</button>
+                    <button onclick="hapusData('delete_${type}', '${id}')" class="text-red-600 text-sm">Hapus</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+// KIRIM DATA (POST) GENERIC
+async function sendAction(formData) {
+    showLoading(true);
+    try {
+        await fetch(GAS_URL, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        });
+        await loadData();
+    } catch (e) { alert("Terjadi kesalahan sistem"); }
+    showLoading(false);
+}
+
+// HAPUS DATA
+function hapusData(action, id) {
+    if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+        const fd = new URLSearchParams();
+        fd.append('action', action);
+        fd.append('id', id);
+        sendAction(fd);
     }
+}
+
+// --- LOGIK PENGAJUAN ---
+document.getElementById('formPengajuanBaru').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fd = new URLSearchParams();
+    fd.append('action', 'create_pengajuan');
+    fd.append('nama', document.getElementById('namaUsahaBaru').value);
+    sendAction(fd);
+    e.target.reset();
+});
+
+function editPengajuan(id) {
+    const data = globalData.pengajuan.find(p => p["ID Pengajuan"] === id);
+    if (!data) return;
     
-    data.forEach(row => {
-        let tr = "<tr class='border-b hover:bg-gray-50 transition'>";
-        columns.forEach(col => tr += `<td class="p-4 text-gray-700">${row[col] || '-'}</td>`);
-        tr += "</tr>";
-        tbody.innerHTML += tr;
-    });
+    document.getElementById('u_idPengajuan').value = id;
+    document.getElementById('u_namaUsaha').innerText = "- " + data["Nama Pelaku Usaha"];
+    document.getElementById('u_noDaftar').value = data["Nomor Daftar"] || '';
+    document.getElementById('u_statusSH').value = data["Status SH"] || 'Draf PU';
+    document.getElementById('u_bayarVia').value = data["Bayar Via"] || 'SiHalal';
+    document.getElementById('u_statusBayar').value = data["Status Bayar"] || 'Belum Bayar';
+    document.getElementById('u_idKonsultan').value = data["ID Konsultan"] || '';
+    document.getElementById('u_namaKonsultan').value = data["Nama Konsultan"] || '';
+    document.getElementById('u_idAuditor').value = data["ID Auditor"] || '';
+    document.getElementById('u_namaAuditor').value = data["Nama Auditor"] || '';
+    document.getElementById('u_keterangan').value = data["Keterangan"] || '';
+    document.getElementById('u_fee').value = data["Fee"] || 'Belum Bayar';
+    
+    document.getElementById('modal-pengajuan').classList.remove('hidden');
 }
 
-// ==========================================
-// 3. FUNGSI TAMBAH PENGAJUAN (CREATE)
-// ==========================================
-// Pastikan id form ini sama dengan yang ada di index.html Anda
-const formPengajuan = document.getElementById('formPengajuan');
-if (formPengajuan) {
-    formPengajuan.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        // Ambil elemen tombol untuk memberikan efek loading
-        const btnSubmit = e.target.querySelector('button[type="submit"]');
-        const namaUsaha = document.getElementById('namaUsaha').value;
-        
-        // Ubah teks tombol saat memproses
-        const originalText = btnSubmit.innerText;
-        btnSubmit.innerText = "Memproses...";
-        btnSubmit.disabled = true;
-        
-        const formData = new URLSearchParams();
-        formData.append('action', 'insert_awal');
-        formData.append('nama_usaha', namaUsaha);
+document.getElementById('formUpdatePengajuan').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fd = new URLSearchParams();
+    fd.append('action', 'update_pengajuan');
+    fd.append('id', document.getElementById('u_idPengajuan').value);
+    fd.append('no_daftar', document.getElementById('u_noDaftar').value);
+    fd.append('status_sh', document.getElementById('u_statusSH').value);
+    fd.append('bayar_via', document.getElementById('u_bayarVia').value);
+    fd.append('status_bayar', document.getElementById('u_statusBayar').value);
+    fd.append('id_konsultan', document.getElementById('u_idKonsultan').value);
+    fd.append('nama_konsultan', document.getElementById('u_namaKonsultan').value);
+    fd.append('id_auditor', document.getElementById('u_idAuditor').value);
+    fd.append('nama_auditor', document.getElementById('u_namaAuditor').value);
+    fd.append('keterangan', document.getElementById('u_keterangan').value);
+    fd.append('fee', document.getElementById('u_fee').value);
+    
+    sendAction(fd);
+    closeModal('modal-pengajuan');
+});
 
-        try {
-            await fetch(GAS_URL, {
-                method: 'POST',
-                body: formData,
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-            });
-            
-            document.getElementById('namaUsaha').value = '';
-            alert('Pengajuan berhasil ditambahkan!');
-            
-            // Otomatis refresh data di tabel dan dashboard
-            loadData(); 
-        } catch (error) {
-            alert('Terjadi kesalahan saat mengirim data.');
-            console.error(error);
-        } finally {
-            // Kembalikan tombol seperti semula
-            btnSubmit.innerText = originalText;
-            btnSubmit.disabled = false;
-        }
-    });
+// --- LOGIK KONSULTAN / AUDITOR ---
+function openModalMaster(type, action, id = '', nama = '') {
+    document.getElementById('master-title').innerText = action === 'add' ? `Tambah ${type}` : `Edit ${type}`;
+    document.getElementById('m_type').value = type;
+    document.getElementById('m_action').value = action === 'add' ? `create_${type}` : `update_${type}`;
+    document.getElementById('m_id').value = id;
+    document.getElementById('m_nama').value = nama;
+    
+    // Matikan ID jika mode edit agar tidak diubah
+    document.getElementById('m_id').readOnly = (action === 'update');
+    document.getElementById('modal-master').classList.remove('hidden');
 }
 
-// Fungsi dummy untuk tombol update (akan kita buatkan form popup-nya nanti)
-function editData(id) {
-    alert("Fitur update untuk ID: " + id + " akan membuka form modal/popup. (Fitur sedang disiapkan)");
-}
+document.getElementById('formMaster').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fd = new URLSearchParams();
+    fd.append('action', document.getElementById('m_action').value);
+    fd.append('id', document.getElementById('m_id').value);
+    fd.append('nama', document.getElementById('m_nama').value);
+    
+    sendAction(fd);
+    closeModal('modal-master');
+});
 
-// ==========================================
-// 4. JALANKAN SAAT HALAMAN DIBUKA
-// ==========================================
 window.onload = loadData;
