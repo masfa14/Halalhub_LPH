@@ -7,39 +7,31 @@ function showLoading(show) {
     document.getElementById('loading').style.display = show ? 'block' : 'none';
 }
 
-// LOGIKA NAVIGASI (Warna Ikon Aktif)
 function switchTab(tabId, clickedBtn = null) {
-    // Sembunyikan semua konten tab
     document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
     document.getElementById('tab-' + tabId).classList.remove('hidden');
     
-    // Reset warna semua icon di bottom nav
     if (clickedBtn) {
         document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.classList.remove('text-green-700');
             btn.classList.add('text-gray-400');
         });
-        // Aktifkan warna hijau pada icon yang diklik
         clickedBtn.classList.remove('text-gray-400');
         clickedBtn.classList.add('text-green-700');
     }
 }
 
-// FUNGSI MODAL
 function closeModal(modalId) {
     document.getElementById(modalId).classList.add('hidden');
 }
 
-// Membuka Modal Tambah Pengajuan (Tombol Tengah)
+// LOGIKA BUAT ID UNIK & BUKA MODAL TAMBAH PENGAJUAN
 function openModalTambah() {
+    const uniqueId = "REQ-" + new Date().getTime();
+    document.getElementById('idPengajuanBaru').value = uniqueId;
     document.getElementById('namaUsahaBaru').value = '';
     document.getElementById('modal-tambah-pengajuan').classList.remove('hidden');
 }
-
-// ==========================================
-// KODE DI BAWAH INI SAMA PERSIS DENGAN SEBELUMNYA 
-// (Tinggal diletakkan di bawah fungsi-fungsi di atas)
-// ==========================================
 
 async function loadData() {
     showLoading(true);
@@ -50,7 +42,7 @@ async function loadData() {
         if (data.status === "success") {
             globalData = data;
             renderDashboard();
-            renderTablePengajuan();
+            renderTablePengajuan(); // Merender seluruh data pengajuan
             renderTableMaster("konsultan", "table-konsultan", ["ID Konsultan", "Nama Konsultan"]);
             renderTableMaster("auditor", "table-auditor", ["ID Auditor", "Nama Auditor"]);
         }
@@ -68,10 +60,26 @@ function renderDashboard() {
     document.getElementById('count-proses').innerText = data.length - selesai;
 }
 
-function renderTablePengajuan() {
+// FUNGSI SEARCH (PENCARIAN NAMA USAHA)
+function cariPengajuan() {
+    const keyword = document.getElementById('searchPengajuan').value.toLowerCase();
+    const filteredData = globalData.pengajuan.filter(row => 
+        row["Nama Pelaku Usaha"].toLowerCase().includes(keyword)
+    );
+    renderTablePengajuan(filteredData);
+}
+
+// RENDER TABEL PENGAJUAN DENGAN PARAMETER FLEKSIBEL (Untuk Search)
+function renderTablePengajuan(dataList = globalData.pengajuan) {
     const tbody = document.getElementById('table-pengajuan');
     tbody.innerHTML = "";
-    globalData.pengajuan.forEach(row => {
+    
+    if (dataList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Data tidak ditemukan</td></tr>`;
+        return;
+    }
+
+    dataList.forEach(row => {
         const color = row["Status SH"] === "Terbit SH" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700";
         tbody.innerHTML += `
             <tr class="border-b border-gray-100 hover:bg-gray-50 text-sm md:text-base">
@@ -131,13 +139,15 @@ function hapusData(action, id) {
     }
 }
 
+// PERBAIKAN FORM SUBMIT PENGAJUAN BARU
 document.getElementById('formPengajuanBaru').addEventListener('submit', (e) => {
     e.preventDefault();
     const fd = new URLSearchParams();
     fd.append('action', 'create_pengajuan');
+    fd.append('id', document.getElementById('idPengajuanBaru').value); // Kirim ID
     fd.append('nama', document.getElementById('namaUsahaBaru').value);
     sendAction(fd);
-    closeModal('modal-tambah-pengajuan'); // Tutup modal setelah submit
+    closeModal('modal-tambah-pengajuan');
     e.target.reset();
 });
 
@@ -181,14 +191,21 @@ document.getElementById('formUpdatePengajuan').addEventListener('submit', (e) =>
     closeModal('modal-pengajuan');
 });
 
+// LOGIKA OTOMATIS ID UNTUK KONSULTAN & AUDITOR
 function openModalMaster(type, action, id = '', nama = '') {
     document.getElementById('master-title').innerText = action === 'add' ? `Tambah ${type}` : `Edit ${type}`;
     document.getElementById('m_type').value = type;
     document.getElementById('m_action').value = action === 'add' ? `create_${type}` : `update_${type}`;
-    document.getElementById('m_id').value = id;
-    document.getElementById('m_nama').value = nama;
     
-    document.getElementById('m_id').readOnly = (action === 'update');
+    // Otomatis generate ID Unik jika action-nya Add
+    if (action === 'add') {
+        const prefix = type === 'konsultan' ? 'KON-' : 'AUD-';
+        document.getElementById('m_id').value = prefix + new Date().getTime();
+    } else {
+        document.getElementById('m_id').value = id;
+    }
+    
+    document.getElementById('m_nama').value = nama;
     document.getElementById('modal-master').classList.remove('hidden');
 }
 
@@ -196,7 +213,7 @@ document.getElementById('formMaster').addEventListener('submit', (e) => {
     e.preventDefault();
     const fd = new URLSearchParams();
     fd.append('action', document.getElementById('m_action').value);
-    fd.append('id', document.getElementById('m_id').value);
+    fd.append('id', document.getElementById('m_id').value); // Akan mengirim ID yang di-generate
     fd.append('nama', document.getElementById('m_nama').value);
     
     sendAction(fd);
