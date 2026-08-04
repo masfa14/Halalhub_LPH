@@ -6,85 +6,152 @@
     <title>HalalCertify - Dashboard UMKM</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans">
+<body class="bg-gray-50 text-gray-800 font-sans relative">
     
     <!-- Navbar -->
-    <nav class="bg-green-700 text-white shadow-md">
+    <nav class="bg-green-700 text-white shadow-md relative z-10">
         <div class="container mx-auto max-w-6xl flex items-center p-4">
             <h1 class="text-2xl font-bold mr-8">HalalCertify</h1>
             <div class="flex space-x-4">
                 <button onclick="switchTab('dashboard')" class="hover:bg-green-600 px-3 py-2 rounded transition">Dashboard</button>
-                <button onclick="switchTab('pengajuan')" class="hover:bg-green-600 px-3 py-2 rounded transition">Data Pengajuan</button>
+                <button onclick="switchTab('pengajuan')" class="hover:bg-green-600 px-3 py-2 rounded transition">Pengajuan</button>
                 <button onclick="switchTab('konsultan')" class="hover:bg-green-600 px-3 py-2 rounded transition">Konsultan</button>
                 <button onclick="switchTab('auditor')" class="hover:bg-green-600 px-3 py-2 rounded transition">Auditor</button>
             </div>
         </div>
     </nav>
 
+    <!-- Notifikasi Loading -->
+    <div id="loading" class="hidden fixed top-4 right-4 bg-blue-600 text-white px-4 py-2 rounded shadow z-50">Sedang memproses...</div>
+
     <div class="container mx-auto p-6 max-w-6xl mt-4">
         
-        <!-- SECTION: DASHBOARD -->
+        <!-- DASHBOARD -->
         <div id="tab-dashboard" class="tab-content">
-            <h2 class="text-xl font-bold mb-6 text-gray-700">Ringkasan Sistem</h2>
+            <h2 class="text-xl font-bold mb-6">Ringkasan Sistem</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-blue-500">
-                    <p class="text-gray-500 text-sm">Total Pengajuan</p>
-                    <h3 class="text-3xl font-bold text-gray-800" id="count-total">0</h3>
+                <div class="bg-white p-6 rounded shadow-sm border-l-4 border-blue-500">
+                    <p class="text-sm">Total Pengajuan</p><h3 class="text-3xl font-bold" id="count-total">0</h3>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-yellow-500">
-                    <p class="text-gray-500 text-sm">Sedang Diproses</p>
-                    <h3 class="text-3xl font-bold text-gray-800" id="count-proses">0</h3>
+                <div class="bg-white p-6 rounded shadow-sm border-l-4 border-yellow-500">
+                    <p class="text-sm">Sedang Diproses</p><h3 class="text-3xl font-bold" id="count-proses">0</h3>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-green-500">
-                    <p class="text-gray-500 text-sm">Selesai (Terbit SH)</p>
-                    <h3 class="text-3xl font-bold text-gray-800" id="count-selesai">0</h3>
+                <div class="bg-white p-6 rounded shadow-sm border-l-4 border-green-500">
+                    <p class="text-sm">Terbit SH</p><h3 class="text-3xl font-bold" id="count-selesai">0</h3>
                 </div>
+            </div>
+            
+            <!-- Form Cepat Pengajuan -->
+            <div class="bg-white p-6 rounded border mb-8">
+                <h2 class="text-lg font-semibold mb-4">Pengajuan Cepat</h2>
+                <form id="formPengajuanBaru" class="flex gap-4">
+                    <input type="text" id="namaUsahaBaru" placeholder="Nama Pelaku Usaha" required class="flex-1 p-2 border rounded">
+                    <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded">Tambah</button>
+                </form>
             </div>
         </div>
 
-        <!-- SECTION: PENGAJUAN -->
+        <!-- PENGAJUAN -->
         <div id="tab-pengajuan" class="tab-content hidden">
-            <h2 class="text-xl font-bold mb-4 text-gray-700">Data Pengajuan UMKM</h2>
-            <!-- (Form Pengajuan dan Tabel Pengajuan diletakkan di sini, sama seperti kode sebelumnya) -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
+            <h2 class="text-xl font-bold mb-4">Data Pengajuan UMKM</h2>
+            <div class="bg-white rounded shadow-sm border overflow-x-auto">
                 <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-gray-100 text-gray-600 text-sm uppercase">
-                            <th class="p-4 border-b">Nama Usaha</th>
-                            <th class="p-4 border-b">No Daftar</th>
-                            <th class="p-4 border-b">Status SH</th>
-                            <th class="p-4 border-b">Auditor</th>
-                            <th class="p-4 border-b">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-pengajuan"><tr><td colspan="5" class="p-4 text-center">Memuat...</td></tr></tbody>
+                    <thead><tr class="bg-gray-100"><th class="p-4 border-b">Nama Usaha</th><th class="p-4 border-b">No Daftar</th><th class="p-4 border-b">Status</th><th class="p-4 border-b">Auditor</th><th class="p-4 border-b">Aksi</th></tr></thead>
+                    <tbody id="table-pengajuan"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- SECTION: KONSULTAN -->
+        <!-- KONSULTAN -->
         <div id="tab-konsultan" class="tab-content hidden">
-            <h2 class="text-xl font-bold mb-4 text-gray-700">Database Konsultan</h2>
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead><tr class="bg-gray-100"><th class="p-4 border-b">ID Konsultan</th><th class="p-4 border-b">Nama Konsultan</th></tr></thead>
-                    <tbody id="table-konsultan"></tbody>
-                </table>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Database Konsultan</h2>
+                <button onclick="openModalMaster('konsultan', 'add')" class="bg-blue-600 text-white px-4 py-2 rounded text-sm">Tambah Konsultan</button>
+            </div>
+            <div class="bg-white rounded border overflow-x-auto">
+                <table class="w-full text-left"><tbody id="table-konsultan"></tbody></table>
             </div>
         </div>
 
-        <!-- SECTION: AUDITOR -->
+        <!-- AUDITOR -->
         <div id="tab-auditor" class="tab-content hidden">
-            <h2 class="text-xl font-bold mb-4 text-gray-700">Database Auditor</h2>
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead><tr class="bg-gray-100"><th class="p-4 border-b">ID Auditor</th><th class="p-4 border-b">Nama Auditor</th></tr></thead>
-                    <tbody id="table-auditor"></tbody>
-                </table>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Database Auditor</h2>
+                <button onclick="openModalMaster('auditor', 'add')" class="bg-blue-600 text-white px-4 py-2 rounded text-sm">Tambah Auditor</button>
+            </div>
+            <div class="bg-white rounded border overflow-x-auto">
+                <table class="w-full text-left"><tbody id="table-auditor"></tbody></table>
             </div>
         </div>
 
     </div>
+
+    <!-- MODAL UPDATE PENGAJUAN -->
+    <div id="modal-pengajuan" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 p-4 overflow-y-auto">
+        <div class="bg-white rounded-lg p-6 w-full max-w-2xl mt-20 md:mt-0">
+            <h2 class="text-xl font-bold mb-4">Update Pengajuan <span id="u_namaUsaha" class="text-green-600"></span></h2>
+            <form id="formUpdatePengajuan" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="hidden" id="u_idPengajuan">
+                
+                <div><label class="text-sm text-gray-600">Nomor Daftar</label><input type="text" id="u_noDaftar" class="w-full p-2 border rounded"></div>
+                <div>
+                    <label class="text-sm text-gray-600">Status SH</label>
+                    <select id="u_statusSH" class="w-full p-2 border rounded">
+                        <option>Draf PU</option><option>Submitted PU</option><option>Verified</option><option>Dikembalikan PU</option><option>Dikirim ke LPH</option><option>Dibatalkan</option><option>Pembayaran</option><option>Review LPH</option><option>Dikirim ke Komisi Fatwa</option><option>Terbit SH</option><option>Proses di LPH</option><option>Penetapan Biaya</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-sm text-gray-600">Bayar Via</label>
+                    <select id="u_bayarVia" class="w-full p-2 border rounded"><option>SiHalal</option><option>LPH</option></select>
+                </div>
+                <div>
+                    <label class="text-sm text-gray-600">Status Bayar</label>
+                    <select id="u_statusBayar" class="w-full p-2 border rounded"><option>Belum Bayar</option><option>Sudah Bayar</option></select>
+                </div>
+                
+                <!-- Input Manual Konsultan/Auditor (Untuk versi cepat, bisa diganti select jika diperlukan) -->
+                <div><label class="text-sm text-gray-600">ID Konsultan</label><input type="text" id="u_idKonsultan" class="w-full p-2 border rounded"></div>
+                <div><label class="text-sm text-gray-600">Nama Konsultan</label><input type="text" id="u_namaKonsultan" class="w-full p-2 border rounded"></div>
+                <div><label class="text-sm text-gray-600">ID Auditor</label><input type="text" id="u_idAuditor" class="w-full p-2 border rounded"></div>
+                <div><label class="text-sm text-gray-600">Nama Auditor</label><input type="text" id="u_namaAuditor" class="w-full p-2 border rounded"></div>
+                
+                <div><label class="text-sm text-gray-600">Keterangan</label><input type="text" id="u_keterangan" class="w-full p-2 border rounded"></div>
+                <div>
+                    <label class="text-sm text-gray-600">Fee</label>
+                    <select id="u_fee" class="w-full p-2 border rounded"><option>Belum Bayar</option><option>Sudah Bayar</option></select>
+                </div>
+                
+                <div class="col-span-1 md:col-span-2 flex justify-end gap-2 mt-4">
+                    <button type="button" onclick="closeModal('modal-pengajuan')" class="px-4 py-2 text-gray-600 border rounded hover:bg-gray-100">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL MASTER (KONSULTAN/AUDITOR) -->
+    <div id="modal-master" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
+        <div class="bg-white rounded-lg p-6 w-full max-w-sm">
+            <h2 id="master-title" class="text-xl font-bold mb-4">Master Form</h2>
+            <form id="formMaster">
+                <input type="hidden" id="m_type">
+                <input type="hidden" id="m_action">
+                <div class="mb-4">
+                    <label class="text-sm text-gray-600">ID</label>
+                    <input type="text" id="m_id" class="w-full p-2 border rounded" required>
+                </div>
+                <div class="mb-4">
+                    <label class="text-sm text-gray-600">Nama</label>
+                    <input type="text" id="m_nama" class="w-full p-2 border rounded" required>
+                </div>
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('modal-master')" class="px-4 py-2 text-gray-600 border rounded">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
