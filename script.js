@@ -98,6 +98,7 @@ function renderTablePengajuan(dataList = globalData.pengajuan) {
     });
 }
 
+// MEMBUAT NAMA KONSULTAN/AUDITOR BISA DI-KLIK (Warna Hijau & Underline)
 function renderTableMaster(type, elementId, columns) {
     const tbody = document.getElementById(elementId);
     tbody.innerHTML = `<thead><tr class="text-gray-500 text-sm border-b"><th class="p-3 md:p-4 font-medium whitespace-nowrap">ID</th><th class="p-3 md:p-4 font-medium whitespace-nowrap">Nama</th><th class="p-3 md:p-4 font-medium w-32 whitespace-nowrap">Aksi</th></tr></thead>`;
@@ -107,7 +108,7 @@ function renderTableMaster(type, elementId, columns) {
         tbody.innerHTML += `
             <tr class="border-b border-gray-100 hover:bg-gray-50 text-sm md:text-base">
                 <td class="p-3 md:p-4 whitespace-nowrap text-gray-600">${id}</td>
-                <td class="p-3 md:p-4 whitespace-nowrap font-semibold text-gray-800">${nama}</td>
+                <td class="p-3 md:p-4 whitespace-nowrap font-semibold text-green-700 cursor-pointer hover:underline" onclick="viewRiwayat('${type}', '${id}', '${nama}')">${nama}</td>
                 <td class="p-3 md:p-4 whitespace-nowrap flex gap-2">
                     <button onclick="openModalMaster('${type}', 'update', '${id}', '${nama}')" class="text-blue-600 font-bold bg-blue-50 px-3 py-1 rounded-full">Edit</button>
                     <button onclick="hapusData('delete_${type}', '${id}')" class="text-red-600 font-bold bg-red-50 px-3 py-1 rounded-full">Hapus</button>
@@ -220,16 +221,17 @@ document.getElementById('formUpdatePengajuan').addEventListener('submit', (e) =>
     closeModal('modal-pengajuan');
 });
 
-// LOGIKA OTOMATIS ID UNTUK KONSULTAN & AUDITOR
+// SOLUSI: MEMBUAT ID MENJADI 5 DIGIT ANGKA
 function openModalMaster(type, action, id = '', nama = '') {
     document.getElementById('master-title').innerText = action === 'add' ? `Tambah ${type}` : `Edit ${type}`;
     document.getElementById('m_type').value = type;
     document.getElementById('m_action').value = action === 'add' ? `create_${type}` : `update_${type}`;
     
-    // Otomatis generate ID Unik jika action-nya Add
     if (action === 'add') {
         const prefix = type === 'konsultan' ? 'KON-' : 'AUD-';
-        document.getElementById('m_id').value = prefix + new Date().getTime();
+        // Generate angka acak 5 digit (antara 10000 - 99999)
+        const random5Digit = Math.floor(10000 + Math.random() * 90000);
+        document.getElementById('m_id').value = prefix + random5Digit;
     } else {
         document.getElementById('m_id').value = id;
     }
@@ -248,5 +250,58 @@ document.getElementById('formMaster').addEventListener('submit', (e) => {
     sendAction(fd);
     closeModal('modal-master');
 });
+
+// FUNGSI UNTUK MENAMPILKAN RIWAYAT KONSULTAN / AUDITOR
+function viewRiwayat(type, id, nama) {
+    document.getElementById('r_namaMaster').innerText = nama;
+    const tbody = document.getElementById('table-riwayat');
+    tbody.innerHTML = "";
+    
+    // Filter data pengajuan untuk mencari nama usaha berdasarkan ID Konsultan/Auditor
+    const filterKey = type === 'konsultan' ? 'ID Konsultan' : 'ID Auditor';
+    const riwayatData = globalData.pengajuan.filter(p => p[filterKey] === id);
+    
+    if (riwayatData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Belum ada riwayat pendampingan</td></tr>`;
+    } else {
+        riwayatData.forEach(row => {
+            const color = row["Status SH"] === "Terbit SH" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700";
+            tbody.innerHTML += `
+                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                    <td class="p-3 text-sm text-gray-600">${row["Nomor Daftar"] || '-'}</td>
+                    <td class="p-3 font-semibold text-gray-800">${row["Nama Pelaku Usaha"]}</td>
+                    <td class="p-3"><span class="px-2 py-1 rounded-full text-xs font-semibold ${color}">${row["Status SH"] || 'Draf PU'}</span></td>
+                    <td class="p-3">
+                        <button onclick="viewDetailPengajuan('${row["ID Pengajuan"]}')" class="text-blue-600 font-bold text-sm bg-blue-50 px-3 py-1 rounded-full">Detail Usaha</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+    
+    document.getElementById('modal-riwayat').classList.remove('hidden');
+}
+
+// FUNGSI UNTUK MELIHAT DETAIL PENGAJUAN (VIEW ONLY) DARI RIWAYAT
+function viewDetailPengajuan(id) {
+    const data = globalData.pengajuan.find(p => p["ID Pengajuan"] === id);
+    if (!data) return;
+    
+    const content = document.getElementById('view-pengajuan-content');
+    content.innerHTML = `
+        <div class="grid grid-cols-2 border-b py-2"><span class="text-gray-500">ID Pengajuan</span><span class="font-medium text-right">${data["ID Pengajuan"]}</span></div>
+        <div class="grid grid-cols-2 border-b py-2"><span class="text-gray-500">Nama Usaha</span><span class="font-medium text-right text-green-700">${data["Nama Pelaku Usaha"]}</span></div>
+        <div class="grid grid-cols-2 border-b py-2"><span class="text-gray-500">Nomor Daftar</span><span class="font-medium text-right">${data["Nomor Daftar"] || '-'}</span></div>
+        <div class="grid grid-cols-2 border-b py-2"><span class="text-gray-500">Status SH</span><span class="font-medium text-right">${data["Status SH"] || '-'}</span></div>
+        <div class="grid grid-cols-2 border-b py-2"><span class="text-gray-500">Konsultan</span><span class="font-medium text-right">${data["Nama Konsultan"] || '-'}</span></div>
+        <div class="grid grid-cols-2 border-b py-2"><span class="text-gray-500">Auditor</span><span class="font-medium text-right">${data["Nama Auditor"] || '-'}</span></div>
+        <div class="grid grid-cols-2 border-b py-2"><span class="text-gray-500">Bayar Via</span><span class="font-medium text-right">${data["Bayar Via"] || '-'}</span></div>
+        <div class="grid grid-cols-2 border-b py-2"><span class="text-gray-500">Status Bayar</span><span class="font-medium text-right">${data["Status Bayar"] || '-'}</span></div>
+        <div class="grid grid-cols-2 border-b py-2"><span class="text-gray-500">Fee</span><span class="font-medium text-right">${data["Fee"] || '-'}</span></div>
+        <div class="grid grid-cols-2 pt-2"><span class="text-gray-500">Keterangan</span><span class="font-medium text-right">${data["Keterangan"] || '-'}</span></div>
+    `;
+    
+    document.getElementById('modal-view-pengajuan').classList.remove('hidden');
+}
 
 window.onload = loadData;
