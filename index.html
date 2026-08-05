@@ -48,6 +48,23 @@
                     <h3 class="text-2xl font-bold text-red-500" id="count-batal">0</h3>
                 </div>
             </div>
+            <!-- ACTIONABLE INSIGHTS (Peringatan & Tindakan) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4">
+                <div class="bg-red-50 p-4 rounded-3xl border border-red-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-red-600 font-bold mb-1">Menunggu Pembayaran</p>
+                        <p class="text-xs text-red-500">UMKM yang belum melunasi</p>
+                    </div>
+                    <div class="text-2xl font-black text-red-600" id="count-belum-bayar">0</div>
+                </div>
+                <div class="bg-orange-50 p-4 rounded-3xl border border-orange-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-orange-600 font-bold mb-1">Draf / Mandek</p>
+                        <p class="text-xs text-orange-500">Pengajuan belum diverifikasi</p>
+                    </div>
+                    <div class="text-2xl font-black text-orange-600" id="count-draf">0</div>
+                </div>
+            </div>
             <!-- Grid Tambahan: Ringkasan Keuangan -->
             <div class="grid grid-cols-2 gap-3 md:gap-4 mb-4">
                 <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex items-center justify-between">
@@ -116,7 +133,7 @@
             </div>
             <div class="bg-white rounded-2xl shadow-sm border overflow-x-auto hide-scrollbar p-2">
                 <table class="w-full text-left border-collapse min-w-[600px]">
-                    <thead><tr class="text-gray-500 text-sm border-b"><th class="p-4 font-medium">Nama Usaha</th><th class="p-4 font-medium">Status</th><th class="p-4 font-medium">Auditor</th><th class="p-4 font-medium">Aksi</th></tr></thead>
+                    <thead><tr class="text-gray-500 text-sm border-b bg-white"><th class="p-4 font-medium min-w-[220px]">Usaha & Pendaftaran</th><th class="p-4 font-medium min-w-[150px]">Status & Keuangan</th><th class="p-4 font-medium min-w-[150px]">Pendamping</th><th class="p-4 font-medium">Aksi</th></tr></thead>
                     <tbody id="table-pengajuan"></tbody>
                 </table>
             </div>
@@ -204,6 +221,10 @@
             <h2 class="text-lg md:text-xl font-bold mb-4">Update <span id="u_namaUsaha" class="text-green-600"></span></h2>
             <form id="formUpdatePengajuan" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input type="hidden" id="u_idPengajuan">
+                <div class="col-span-1 md:col-span-2">
+                    <label class="text-sm text-gray-500">Nama Pelaku Usaha</label>
+                    <input type="text" id="u_editNamaUsaha" class="w-full p-2 border rounded-xl bg-white font-bold" required>
+                </div>
                 <div><label class="text-sm text-gray-500">Nomor Daftar</label><input type="text" id="u_noDaftar" class="w-full p-2 border rounded-xl bg-gray-50"></div>
                 <div><label class="text-sm text-gray-500">Status SH</label><select id="u_statusSH" class="w-full p-2 border rounded-xl bg-gray-50"><option>Draf PU</option><option>Submitted PU</option><option>Verified</option><option>Dikembalikan PU</option><option>Dikirim ke LPH</option><option>Dibatalkan</option><option>Pembayaran</option><option>Review LPH</option><option>Dikirim ke Komisi Fatwa</option><option>Terbit SH</option><option>Proses di LPH</option><option>Penetapan Biaya</option></select></div>
                 <div><label class="text-sm text-gray-500">Bayar Via</label><select id="u_bayarVia" class="w-full p-2 border rounded-xl bg-gray-50"><option>SiHalal</option><option>LPH</option></select></div>
