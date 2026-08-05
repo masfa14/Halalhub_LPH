@@ -27,28 +27,79 @@
         
         <!-- TAB: DASHBOARD -->
         <div id="tab-dashboard" class="tab-content">
-            <h2 class="text-lg font-bold mb-4">Ringkasan Bulan Ini</h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-                <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mb-2">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    </div>
-                    <h3 class="text-2xl font-bold text-blue-600" id="count-total">0</h3>
-                    <p class="text-xs text-gray-500 mt-1">Total Pengajuan</p>
+            <h2 class="text-lg font-bold mb-4">Ringkasan Sistem</h2>
+            
+            <!-- Grid 1: Status Pengajuan -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-4">
+                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-center">
+                    <p class="text-xs text-gray-500 mb-1">Total Pengajuan</p>
+                    <h3 class="text-2xl font-bold text-gray-800" id="count-total">0</h3>
                 </div>
-                <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-                    <div class="w-10 h-10 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center mb-2">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </div>
+                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-center">
+                    <p class="text-xs text-gray-500 mb-1">Dalam Proses</p>
                     <h3 class="text-2xl font-bold text-yellow-600" id="count-proses">0</h3>
-                    <p class="text-xs text-gray-500 mt-1">Diproses</p>
                 </div>
-                <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center col-span-2 md:col-span-1">
-                    <div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-2">
+                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-center">
+                    <p class="text-xs text-gray-500 mb-1">Terbit SH (Selesai)</p>
+                    <h3 class="text-2xl font-bold text-green-600" id="count-selesai">0</h3>
+                </div>
+                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-center">
+                    <p class="text-xs text-gray-500 mb-1">Dibatalkan</p>
+                    <h3 class="text-2xl font-bold text-red-500" id="count-batal">0</h3>
+                </div>
+            </div>
+            <!-- Grid Tambahan: Ringkasan Keuangan -->
+            <div class="grid grid-cols-2 gap-3 md:gap-4 mb-4">
+                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-gray-500 mb-1">Pengajuan Sudah Bayar</p>
+                        <h3 class="text-2xl font-bold text-teal-600" id="count-status-bayar">0</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-gray-500 mb-1">Fee Sudah Terbayar</p>
+                        <h3 class="text-2xl font-bold text-emerald-600" id="count-fee">0</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-green-600" id="count-selesai">0</h3>
-                    <p class="text-xs text-gray-500 mt-1">Terbit SH</p>
+                </div>
+            </div>
+
+            <!-- Grid 2: Total Tim -->
+            <div class="grid grid-cols-2 gap-3 md:gap-4 mb-6">
+                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold" id="count-konsultan">0</div>
+                    <div><p class="text-sm font-bold text-gray-800">Total Konsultan</p></div>
+                </div>
+                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold" id="count-auditor">0</div>
+                    <div><p class="text-sm font-bold text-gray-800">Total Auditor</p></div>
+                </div>
+            </div>
+
+            <!-- Grid 3: Leaderboard (Top 5) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8">
+                <!-- Top 5 Konsultan -->
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-center mb-4 border-b pb-2">
+                        <h3 class="font-bold text-gray-800 text-sm md:text-base">Top 5 Konsultan</h3>
+                        <button onclick="switchTab('konsultan', document.getElementById('nav-konsultan'))" class="text-xs md:text-sm text-blue-600 hover:underline flex items-center gap-1">Lihat Semua <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+                    </div>
+                    <div id="list-top-konsultan" class="flex flex-col gap-3"></div>
+                </div>
+
+                <!-- Top 5 Auditor -->
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-center mb-4 border-b pb-2">
+                        <h3 class="font-bold text-gray-800 text-sm md:text-base">Top 5 Auditor</h3>
+                        <button onclick="switchTab('auditor', document.getElementById('nav-auditor'))" class="text-xs md:text-sm text-blue-600 hover:underline flex items-center gap-1">Lihat Semua <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+                    </div>
+                    <div id="list-top-auditor" class="flex flex-col gap-3"></div>
                 </div>
             </div>
         </div>
