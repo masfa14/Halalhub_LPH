@@ -64,6 +64,12 @@ function renderDashboard() {
     // --- LOGIKA BARU: Menghitung Keuangan ---
     const sudahBayar = pData.filter(p => p["Status Bayar"] === "Sudah Bayar").length;
     const feeSelesai = pData.filter(p => p["Fee"] === "Sudah Bayar").length;
+    const belumBayar = pData.filter(p => p["Status Bayar"] === "Belum Bayar").length;
+    const draf = pData.filter(p => p["Status SH"] === "Draf PU").length;
+
+    // Masukkan nilainya ke HTML
+    document.getElementById('count-belum-bayar').innerText = belumBayar;
+    document.getElementById('count-draf').innerText = draf;
 
     // Isi Nilai Status Pengajuan
     document.getElementById('count-total').innerText = totalPengajuan;
@@ -140,18 +146,38 @@ function renderTablePengajuan(dataList = globalData.pengajuan) {
     }
 
     dataList.forEach(row => {
-        const color = row["Status SH"] === "Terbit SH" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700";
+        const colorSH = row["Status SH"] === "Terbit SH" ? "bg-green-100 text-green-700" : (row["Status SH"] === "Draf PU" ? "bg-gray-100 text-gray-600" : "bg-yellow-100 text-yellow-700");
+        const colorBayar = row["Status Bayar"] === "Sudah Bayar" ? "text-teal-600 bg-teal-50" : "text-red-600 bg-red-50";
+        
         tbody.innerHTML += `
-            <tr class="border-b border-gray-100 hover:bg-gray-50 text-sm md:text-base">
-                <td class="p-3 md:p-4 whitespace-nowrap">
-                    <p class="font-bold text-gray-800">${row["Nama Pelaku Usaha"]}</p>
-                    <p class="text-xs text-gray-500">${row["Nomor Daftar"] || 'Belum ada No Daftar'}</p>
+            <tr class="border-b border-gray-100 hover:bg-gray-50 align-top">
+                <!-- Kolom 1: Info Usaha (Bisa multi-baris) -->
+                <td class="p-3 md:p-4 whitespace-normal break-words">
+                    <p class="font-bold text-gray-800 leading-tight">${row["Nama Pelaku Usaha"]}</p>
+                    <p class="text-xs text-gray-500 mt-1 font-mono">No: ${row["Nomor Daftar"] || 'Belum ada'}</p>
                 </td>
-                <td class="p-3 md:p-4 whitespace-nowrap"><span class="px-2 py-1 rounded-full text-xs font-semibold ${color}">${row["Status SH"] || 'Draf PU'}</span></td>
-                <td class="p-3 md:p-4 whitespace-nowrap text-gray-600">${row["Nama Auditor"] || '-'}</td>
-                <td class="p-3 md:p-4 whitespace-nowrap flex gap-3">
-                    <button onclick="editPengajuan('${row["ID Pengajuan"]}')" class="text-blue-600 font-bold bg-blue-50 px-3 py-1 rounded-full">Edit</button>
-                    <button onclick="hapusData('delete_pengajuan', '${row["ID Pengajuan"]}')" class="text-red-600 font-bold bg-red-50 px-3 py-1 rounded-full">Hapus</button>
+                
+                <!-- Kolom 2: Status & Keuangan (Badge tersusun) -->
+                <td class="p-3 md:p-4 whitespace-nowrap">
+                    <div class="flex flex-col items-start gap-1">
+                        <span class="px-2 py-1 rounded-md text-[11px] font-bold ${colorSH}">${row["Status SH"] || 'Draf PU'}</span>
+                        <div class="text-[11px] mt-1 flex items-center gap-1 border border-gray-200 rounded px-1.5 py-0.5">
+                            <span class="text-gray-500">Via:</span><span class="font-bold">${row["Bayar Via"] || '-'}</span>
+                        </div>
+                        <span class="px-2 py-0.5 rounded text-[11px] font-bold ${colorBayar}">${row["Status Bayar"] || 'Belum Bayar'}</span>
+                    </div>
+                </td>
+                
+                <!-- Kolom 3: Pendamping -->
+                <td class="p-3 md:p-4 whitespace-nowrap">
+                    <p class="text-xs text-gray-600 mb-1"><span class="font-medium text-gray-400">K:</span> ${row["Nama Konsultan"] || '-'}</p>
+                    <p class="text-xs text-gray-600"><span class="font-medium text-gray-400">A:</span> ${row["Nama Auditor"] || '-'}</p>
+                </td>
+                
+                <!-- Kolom 4: Aksi -->
+                <td class="p-3 md:p-4 whitespace-nowrap flex gap-2">
+                    <button onclick="editPengajuan('${row["ID Pengajuan"]}')" class="text-blue-600 font-bold bg-blue-50 px-3 py-1.5 rounded-xl text-xs hover:bg-blue-100">Edit</button>
+                    <button onclick="hapusData('delete_pengajuan', '${row["ID Pengajuan"]}')" class="text-red-600 font-bold bg-red-50 px-3 py-1.5 rounded-xl text-xs hover:bg-red-100">Hapus</button>
                 </td>
             </tr>
         `;
@@ -246,6 +272,7 @@ function editPengajuan(id) {
     // 3. Isi nilai form dengan data yang sudah ada sebelumnya
     document.getElementById('u_idPengajuan').value = id;
     document.getElementById('u_namaUsaha').innerText = "- " + data["Nama Pelaku Usaha"];
+    document.getElementById('u_editNamaUsaha').value = data["Nama Pelaku Usaha"]; // Tambahkan baris ini
     document.getElementById('u_noDaftar').value = data["Nomor Daftar"] || '';
     document.getElementById('u_statusSH').value = data["Status SH"] || 'Draf PU';
     document.getElementById('u_bayarVia').value = data["Bayar Via"] || 'SiHalal';
@@ -266,6 +293,7 @@ document.getElementById('formUpdatePengajuan').addEventListener('submit', (e) =>
     const fd = new URLSearchParams();
     fd.append('action', 'update_pengajuan');
     fd.append('id', document.getElementById('u_idPengajuan').value);
+    fd.append('nama', document.getElementById('u_editNamaUsaha').value); // Tambahkan baris ini
     fd.append('no_daftar', document.getElementById('u_noDaftar').value);
     fd.append('status_sh', document.getElementById('u_statusSH').value);
     fd.append('bayar_via', document.getElementById('u_bayarVia').value);
