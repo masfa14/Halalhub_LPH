@@ -53,11 +53,71 @@ async function loadData() {
 }
 
 function renderDashboard() {
-    const data = globalData.pengajuan;
-    const selesai = data.filter(p => p["Status SH"] === "Terbit SH").length;
-    document.getElementById('count-total').innerText = data.length;
+    const pData = globalData.pengajuan;
+    const totalPengajuan = pData.length;
+    
+    // Status Pengajuan
+    const selesai = pData.filter(p => p["Status SH"] === "Terbit SH").length;
+    const batal = pData.filter(p => p["Status SH"] === "Dibatalkan" || p["Status SH"] === "Dikembalikan PU").length;
+    const proses = totalPengajuan - selesai - batal; 
+
+    // --- LOGIKA BARU: Menghitung Keuangan ---
+    const sudahBayar = pData.filter(p => p["Status Bayar"] === "Sudah Bayar").length;
+    const feeSelesai = pData.filter(p => p["Fee"] === "Sudah Bayar").length;
+
+    // Isi Nilai Status Pengajuan
+    document.getElementById('count-total').innerText = totalPengajuan;
     document.getElementById('count-selesai').innerText = selesai;
-    document.getElementById('count-proses').innerText = data.length - selesai;
+    document.getElementById('count-proses').innerText = proses;
+    document.getElementById('count-batal').innerText = batal;
+    
+    // --- MENGISI NILAI KEUANGAN KE HTML ---
+    document.getElementById('count-status-bayar').innerText = sudahBayar;
+    document.getElementById('count-fee').innerText = feeSelesai;
+    
+    // Isi Total Konsultan & Auditor
+    document.getElementById('count-konsultan').innerText = globalData.konsultan.length;
+    document.getElementById('count-auditor').innerText = globalData.auditor.length;
+
+    // Menghitung Top 5 Konsultan berdasarkan "Terbit SH"
+    let rekapKonsultan = {};
+    pData.forEach(p => {
+        if (p["Status SH"] === "Terbit SH" && p["Nama Konsultan"]) {
+            rekapKonsultan[p["Nama Konsultan"]] = (rekapKonsultan[p["Nama Konsultan"]] || 0) + 1;
+        }
+    });
+    // Mengurutkan dan mengambil 5 teratas
+    let topKonsultan = Object.keys(rekapKonsultan).map(nama => {
+        return { nama: nama, total: rekapKonsultan[nama] };
+    }).sort((a, b) => b.total - a.total).slice(0, 5);
+
+    // Render ke HTML Top Konsultan
+    const listK = document.getElementById('list-top-konsultan');
+    listK.innerHTML = "";
+    if (topKonsultan.length === 0) listK.innerHTML = '<p class="text-sm text-gray-500 italic">Belum ada data penyelesaian.</p>';
+    topKonsultan.forEach((k, index) => {
+        listK.innerHTML += `<div class="flex justify-between items-center text-sm"><span class="flex items-center gap-2"><span class="bg-blue-100 text-blue-700 font-bold w-6 h-6 flex items-center justify-center rounded-full text-xs">${index+1}</span> <span class="font-medium text-gray-700">${k.nama}</span></span><span class="font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-md">${k.total} Selesai</span></div>`;
+    });
+
+    // Menghitung Top 5 Auditor berdasarkan "Terbit SH"
+    let rekapAuditor = {};
+    pData.forEach(p => {
+        if (p["Status SH"] === "Terbit SH" && p["Nama Auditor"]) {
+            rekapAuditor[p["Nama Auditor"]] = (rekapAuditor[p["Nama Auditor"]] || 0) + 1;
+        }
+    });
+    // Mengurutkan dan mengambil 5 teratas
+    let topAuditor = Object.keys(rekapAuditor).map(nama => {
+        return { nama: nama, total: rekapAuditor[nama] };
+    }).sort((a, b) => b.total - a.total).slice(0, 5);
+
+    // Render ke HTML Top Auditor
+    const listA = document.getElementById('list-top-auditor');
+    listA.innerHTML = "";
+    if (topAuditor.length === 0) listA.innerHTML = '<p class="text-sm text-gray-500 italic">Belum ada data penyelesaian.</p>';
+    topAuditor.forEach((a, index) => {
+        listA.innerHTML += `<div class="flex justify-between items-center text-sm"><span class="flex items-center gap-2"><span class="bg-indigo-100 text-indigo-700 font-bold w-6 h-6 flex items-center justify-center rounded-full text-xs">${index+1}</span> <span class="font-medium text-gray-700">${a.nama}</span></span><span class="font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-md">${a.total} Selesai</span></div>`;
+    });
 }
 
 // FUNGSI SEARCH (PENCARIAN NAMA USAHA)
