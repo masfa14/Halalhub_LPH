@@ -27,97 +27,112 @@
         
         <!-- TAB: DASHBOARD -->
         <div id="tab-dashboard" class="tab-content">
-            <h2 class="text-lg font-bold mb-4">Ringkasan Sistem</h2>
             
-            <!-- Grid 1: Status Pengajuan -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-4">
-                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-center">
-                    <p class="text-xs text-gray-500 mb-1">Total Pengajuan</p>
-                    <h3 class="text-2xl font-bold text-gray-800" id="count-total">0</h3>
-                </div>
-                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-center">
-                    <p class="text-xs text-gray-500 mb-1">Dalam Proses</p>
-                    <h3 class="text-2xl font-bold text-yellow-600" id="count-proses">0</h3>
-                </div>
-                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-center">
-                    <p class="text-xs text-gray-500 mb-1">Terbit SH (Selesai)</p>
-                    <h3 class="text-2xl font-bold text-green-600" id="count-selesai">0</h3>
-                </div>
-                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-center">
-                    <p class="text-xs text-gray-500 mb-1">Dibatalkan</p>
-                    <h3 class="text-2xl font-bold text-red-500" id="count-batal">0</h3>
+            <!-- HEADER: Hello Admin & Date -->
+            <div class="mb-5 mt-2">
+                <h2 class="text-2xl font-bold text-gray-800">Hello, Admin 👋</h2>
+                <p class="text-gray-500 text-sm mb-2">Selamat datang di Halal Hub</p>
+                <div class="bg-green-100/50 text-green-700 text-xs font-semibold inline-flex items-center px-3 py-1.5 rounded-full border border-green-200">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span id="current-date">Today, Memuat...</span>
                 </div>
             </div>
-            <!-- ACTIONABLE INSIGHTS (Peringatan & Tindakan) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4">
-                <div class="bg-red-50 p-4 rounded-3xl border border-red-100 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs text-red-600 font-bold mb-1">Menunggu Pembayaran</p>
-                        <p class="text-xs text-red-500">UMKM yang belum melunasi</p>
+
+            <!-- SECTION 1: OVERVIEW CARD -->
+            <div class="bg-gradient-to-r from-green-800 to-green-600 rounded-[2rem] p-5 md:p-6 text-white mb-6 shadow-lg shadow-green-200/50">
+                <h3 class="font-medium text-green-50 mb-4 text-sm opacity-90">Overview</h3>
+                <div class="flex justify-between items-start text-center">
+                    <div class="flex flex-col items-center flex-1 border-r border-green-500/50 px-1">
+                        <svg class="w-6 h-6 mb-1 text-green-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <h4 class="text-xl md:text-2xl font-bold leading-tight" id="count-total">0</h4>
+                        <p class="text-[10px] md:text-xs text-green-100 mt-1 whitespace-nowrap">Pengajuan</p>
                     </div>
-                    <div class="text-2xl font-black text-red-600" id="count-belum-bayar">0</div>
-                </div>
-                <div class="bg-orange-50 p-4 rounded-3xl border border-orange-100 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs text-orange-600 font-bold mb-1">Draf / Mandek</p>
-                        <p class="text-xs text-orange-500">Pengajuan belum diverifikasi</p>
+                    <div class="flex flex-col items-center flex-1 border-r border-green-500/50 px-1">
+                        <svg class="w-6 h-6 mb-1 text-yellow-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <h4 class="text-xl md:text-2xl font-bold leading-tight" id="count-proses">0</h4>
+                        <p class="text-[10px] md:text-xs text-green-100 mt-1 whitespace-nowrap">Dalam Proses</p>
                     </div>
-                    <div class="text-2xl font-black text-orange-600" id="count-draf">0</div>
+                    <div class="flex flex-col items-center flex-1 border-r border-green-500/50 px-1">
+                        <svg class="w-6 h-6 mb-1 text-teal-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <h4 class="text-xl md:text-2xl font-bold leading-tight" id="count-selesai">0</h4>
+                        <p class="text-[10px] md:text-xs text-green-100 mt-1 whitespace-nowrap">Terbit SH</p>
+                    </div>
+                    <div class="flex flex-col items-center flex-1 px-1">
+                        <svg class="w-6 h-6 mb-1 text-red-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <h4 class="text-xl md:text-2xl font-bold leading-tight" id="count-batal">0</h4>
+                        <p class="text-[10px] md:text-xs text-green-100 mt-1 whitespace-nowrap">Dibatalkan</p>
+                    </div>
                 </div>
             </div>
-            <!-- Grid Tambahan: Ringkasan Keuangan -->
-            <div class="grid grid-cols-2 gap-3 md:gap-4 mb-4">
-                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs text-gray-500 mb-1">Pengajuan Sudah Bayar</p>
-                        <h3 class="text-2xl font-bold text-teal-600" id="count-status-bayar">0</h3>
-                    </div>
-                    <div class="w-10 h-10 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center">
+
+            <!-- SECTION 2: EXPLORE (Quick Access Menu) -->
+            <h3 class="font-bold text-gray-800 mb-3 ml-2 text-[15px]">Explore</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <!-- Tombol Pembayaran Ajuan (Buka tab pengajuan, filter bisa Anda kembangkan nanti) -->
+                <button onclick="switchTab('pengajuan', document.querySelector('[onclick*=\'pengajuan\'].nav-btn'))" class="bg-white p-4 rounded-[1.5rem] shadow-[0_8px_20px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center text-center justify-center aspect-square transition transform hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center mb-3">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                     </div>
-                </div>
-                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs text-gray-500 mb-1">Fee Sudah Terbayar</p>
-                        <h3 class="text-2xl font-bold text-emerald-600" id="count-fee">0</h3>
+                    <p class="text-xs font-bold text-gray-700 leading-tight">Pembayaran<br>Ajuan</p>
+                </button>
+                
+                <!-- Tombol Pembayaran Fee -->
+                <button onclick="switchTab('pengajuan', document.querySelector('[onclick*=\'pengajuan\'].nav-btn'))" class="bg-white p-4 rounded-[1.5rem] shadow-[0_8px_20px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center text-center justify-center aspect-square transition transform hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <p class="text-xs font-bold text-gray-700 leading-tight">Pembayaran<br>Fee</p>
+                </button>
+
+                <!-- Tombol Konsultan -->
+                <button onclick="switchTab('konsultan', document.querySelector('[onclick*=\'konsultan\'].nav-btn'))" class="bg-white p-4 rounded-[1.5rem] shadow-[0_8px_20px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center text-center justify-center aspect-square transition transform hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-3">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                     </div>
-                </div>
+                    <p class="text-xs font-bold text-gray-700 leading-tight">Database<br>Konsultan</p>
+                </button>
+
+                <!-- Tombol Auditor -->
+                <button onclick="switchTab('auditor', document.querySelector('[onclick*=\'auditor\'].nav-btn'))" class="bg-white p-4 rounded-[1.5rem] shadow-[0_8px_20px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center text-center justify-center aspect-square transition transform hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center mb-3">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                    </div>
+                    <p class="text-xs font-bold text-gray-700 leading-tight">Database<br>Auditor</p>
+                </button>
             </div>
 
-            <!-- Grid 2: Total Tim -->
-            <div class="grid grid-cols-2 gap-3 md:gap-4 mb-6">
-                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold" id="count-konsultan">0</div>
-                    <div><p class="text-sm font-bold text-gray-800">Total Konsultan</p></div>
-                </div>
-                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold" id="count-auditor">0</div>
-                    <div><p class="text-sm font-bold text-gray-800">Total Auditor</p></div>
-                </div>
-            </div>
-
-            <!-- Grid 3: Leaderboard (Top 5) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8">
-                <!-- Top 5 Konsultan -->
-                <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
-                    <div class="flex justify-between items-center mb-4 border-b pb-2">
-                        <h3 class="font-bold text-gray-800 text-sm md:text-base">Top 5 Konsultan</h3>
-                        <button onclick="switchTab('konsultan', document.getElementById('nav-konsultan'))" class="text-xs md:text-sm text-blue-600 hover:underline flex items-center gap-1">Lihat Semua <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+            <!-- SECTION 3: ALERTS (Informasi Terkait) -->
+            <h3 class="font-bold text-gray-800 mb-3 ml-2 text-[15px]">Alerts</h3>
+            <div class="flex flex-col gap-3">
+                
+                <!-- Alert 1: Belum ada Nomor Daftar -->
+                <div class="bg-white p-4 rounded-[1.5rem] shadow-[0_4px_15px_rgba(0,0,0,0.02)] border border-red-100 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center shrink-0 border border-red-100">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        </div>
+                        <div>
+                            <p class="text-[13px] text-gray-800 font-bold mb-0.5 leading-tight">Ajuan belum ada No Daftar</p>
+                            <p class="text-[11px] text-gray-500">UMKM perlu diupdate nomor daftarnya</p>
+                        </div>
                     </div>
-                    <div id="list-top-konsultan" class="flex flex-col gap-3"></div>
+                    <div class="text-xl font-black text-red-500 bg-red-50 px-3 py-1 rounded-full" id="count-belum-daftar">0</div>
+                </div>
+                
+                <!-- Alert 2: Draf/Mandek -->
+                <div class="bg-white p-4 rounded-[1.5rem] shadow-[0_4px_15px_rgba(0,0,0,0.02)] border border-orange-100 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center shrink-0 border border-orange-100">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <div>
+                            <p class="text-[13px] text-gray-800 font-bold mb-0.5 leading-tight">Draf / Mandek</p>
+                            <p class="text-[11px] text-gray-500">Pengajuan belum terverifikasi</p>
+                        </div>
+                    </div>
+                    <div class="text-xl font-black text-orange-500 bg-orange-50 px-3 py-1 rounded-full" id="count-draf">0</div>
                 </div>
 
-                <!-- Top 5 Auditor -->
-                <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
-                    <div class="flex justify-between items-center mb-4 border-b pb-2">
-                        <h3 class="font-bold text-gray-800 text-sm md:text-base">Top 5 Auditor</h3>
-                        <button onclick="switchTab('auditor', document.getElementById('nav-auditor'))" class="text-xs md:text-sm text-blue-600 hover:underline flex items-center gap-1">Lihat Semua <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
-                    </div>
-                    <div id="list-top-auditor" class="flex flex-col gap-3"></div>
-                </div>
             </div>
         </div>
 
