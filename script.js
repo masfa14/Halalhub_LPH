@@ -43,8 +43,9 @@ async function loadData() {
             globalData = data;
             renderDashboard();
             renderTablePengajuan(); // Merender seluruh data pengajuan
-            renderTableMaster("konsultan", "table-konsultan", ["ID Konsultan", "Nama Konsultan"]);
-            renderTableMaster("auditor", "table-auditor", ["ID Auditor", "Nama Auditor"]);
+            // Ganti renderTableMaster menjadi renderCardMaster
+            renderCardMaster("konsultan", "list-konsultan");
+            renderCardMaster("auditor", "list-auditor");
         }
     } catch (error) {
         alert("Gagal memuat data dari server.");
@@ -141,24 +142,97 @@ function renderTablePengajuan(dataList = globalData.pengajuan) {
     });
 }
 
-// MEMBUAT NAMA KONSULTAN/AUDITOR BISA DI-KLIK (Warna Hijau & Underline)
-function renderTableMaster(type, elementId, columns) {
-    const tbody = document.getElementById(elementId);
-    tbody.innerHTML = `<thead><tr class="text-gray-500 text-sm border-b"><th class="p-3 md:p-4 font-medium whitespace-nowrap">ID</th><th class="p-3 md:p-4 font-medium whitespace-nowrap">Nama</th><th class="p-3 md:p-4 font-medium w-32 whitespace-nowrap">Aksi</th></tr></thead>`;
-    globalData[type].forEach(row => {
-        const id = row[columns[0]];
-        const nama = row[columns[1]];
-        tbody.innerHTML += `
-            <tr class="border-b border-gray-100 hover:bg-gray-50 text-sm md:text-base">
-                <td class="p-3 md:p-4 whitespace-nowrap text-gray-600">${id}</td>
-                <td class="p-3 md:p-4 whitespace-nowrap font-semibold text-green-700 cursor-pointer hover:underline" onclick="viewRiwayat('${type}', '${id}', '${nama}')">${nama}</td>
-                <td class="p-3 md:p-4 whitespace-nowrap flex gap-2">
-                    <button onclick="openModalMaster('${type}', 'update', '${id}', '${nama}')" class="text-blue-600 font-bold bg-blue-50 px-3 py-1 rounded-full">Edit</button>
-                    <button onclick="hapusData('delete_${type}', '${id}')" class="text-red-600 font-bold bg-red-50 px-3 py-1 rounded-full">Hapus</button>
-                </td>
-            </tr>
+// FUNGSI RENDER DESAIN KARTU (Pengganti Tabel)
+function renderCardMaster(type, containerId, dataList = null) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+    
+    const list = dataList || globalData[type];
+    const nameKey = type === 'konsultan' ? 'Nama Konsultan' : 'Nama Auditor';
+    const idKey = type === 'konsultan' ? 'ID Konsultan' : 'ID Auditor';
+    
+    if (list.length === 0) {
+        container.innerHTML = `<div class="text-center text-gray-500 py-8 bg-white rounded-3xl border border-dashed border-gray-200">Data tidak ditemukan.</div>`;
+        return;
+    }
+
+    // 1. Hitung jumlah PU yang "Terbit SH" untuk setiap orang
+    const completedCounts = {};
+    globalData.pengajuan.forEach(p => {
+        if (p["Status SH"] === "Terbit SH") {
+            const personName = p[nameKey];
+            if (personName) completedCounts[personName] = (completedCounts[personName] || 0) + 1;
+        }
+    });
+
+    // 2. Buat Tampilan Kartu
+    list.forEach(row => {
+        const id = row[idKey];
+        const nama = row[nameKey];
+        const totalSelesai = completedCounts[nama] || 0; // Mengambil jumlah selesai
+        
+        // Warna tema pembeda konsultan vs auditor
+        const iconBg = type === 'konsultan' ? 'bg-blue-50 text-blue-500' : 'bg-indigo-50 text-indigo-500';
+        const labelText = type === 'konsultan' ? 'Konsultan' : 'Auditor';
+
+        container.innerHTML += `
+            <div class="bg-white rounded-[1.5rem] p-4 shadow-[0_4px_15px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col md:flex-row gap-4 transition hover:shadow-md relative">
+                
+                <!-- Bintang Kanan Atas (Pengganti Love) -->
+                <div class="absolute top-4 right-4 text-gray-300 hidden md:block">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                </div>
+
+                <div class="flex items-center gap-4 flex-1">
+                    <!-- Icon Foto Avatar -->
+                    <div class="w-[70px] h-[70px] rounded-[1.2rem] ${iconBg} flex items-center justify-center shrink-0 cursor-pointer" onclick="viewRiwayat('${type}', '${id}', '${nama}')">
+                        <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    </div>
+                    
+                    <!-- Content (Nama, Kategori, Rating) -->
+                    <div class="flex-1 cursor-pointer" onclick="viewRiwayat('${type}', '${id}', '${nama}')">
+                        <h3 class="font-bold text-gray-800 text-[16px] mb-0.5 leading-tight pr-6 md:pr-0">${nama}</h3>
+                        
+                        <div class="flex items-center text-[11px] text-gray-500 mb-2 gap-2">
+                            <span class="font-medium">${labelText}</span>
+                            <span class="w-0.5 h-3 bg-gray-300"></span>
+                            <span>ID: ${id}</span>
+                        </div>
+                        
+                        <!-- Area Bintang & Total PU -->
+                        <div class="flex items-center text-[12px] font-semibold text-gray-700">
+                            <svg class="w-4 h-4 text-yellow-400 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <span>${totalSelesai} <span class="text-gray-400 font-normal">(PU Diselesaikan)</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons (Edit/Hapus) tersusun rapi di pojok -->
+                <div class="flex flex-row md:flex-col gap-2 md:border-l border-gray-100 md:pl-3 pt-3 md:pt-0 border-t md:border-t-0 justify-end md:justify-center">
+                    <button onclick="openModalMaster('${type}', 'update', '${id}', '${nama}')" class="text-blue-500 hover:bg-blue-50 p-2 rounded-xl transition flex items-center justify-center gap-1 text-xs font-bold" title="Edit">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg> <span class="md:hidden">Edit</span>
+                    </button>
+                    <button onclick="hapusData('delete_${type}', '${id}')" class="text-red-500 hover:bg-red-50 p-2 rounded-xl transition flex items-center justify-center gap-1 text-xs font-bold" title="Hapus">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg> <span class="md:hidden">Hapus</span>
+                    </button>
+                </div>
+            </div>
         `;
     });
+}
+
+// FUNGSI SEARCH (Untuk mencari nama konsultan / auditor)
+function cariMaster(type) {
+    const inputId = type === 'konsultan' ? 'searchKonsultan' : 'searchAuditor';
+    const containerId = type === 'konsultan' ? 'list-konsultan' : 'list-auditor';
+    const nameKey = type === 'konsultan' ? 'Nama Konsultan' : 'Nama Auditor';
+    
+    const keyword = document.getElementById(inputId).value.toLowerCase();
+    const filteredData = globalData[type].filter(row => 
+        row[nameKey].toLowerCase().includes(keyword)
+    );
+    
+    renderCardMaster(type, containerId, filteredData);
 }
 
 async function sendAction(formData) {
