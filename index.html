@@ -138,21 +138,24 @@
 
         <!-- TAB: PENGAJUAN -->
         <div id="tab-pengajuan" class="tab-content hidden">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
-                <h2 class="text-lg font-bold">Data Pengajuan UMKM</h2>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-3">
+                <h2 class="text-lg font-bold">Data Pengajuan</h2>
                 <!-- FITUR SEARCH -->
                 <div class="flex w-full md:w-auto gap-2">
-                    <input type="text" id="searchPengajuan" onkeyup="if(event.key === 'Enter') cariPengajuan()" placeholder="Cari Nama Usaha..." class="w-full md:w-64 p-2 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 text-sm">
+                    <!-- Placeholder diganti agar informatif -->
+                    <input type="text" id="searchPengajuan" onkeyup="if(event.key === 'Enter') cariPengajuan()" placeholder="Cari Nama atau No Daftar..." class="w-full md:w-64 p-2 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 text-sm">
                     <button onclick="cariPengajuan()" class="bg-green-100 text-green-700 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-green-200 transition">Cari</button>
                 </div>
             </div>
+
+            <!-- SOLUSI: Teks informasi geser ke kanan -->
+            <p class="text-[12px] text-gray-500 italic mb-3 flex items-center gap-1 md:hidden">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
+                Geser tabel ke kanan untuk melihat menu edit/hapus
+            </p>
+
             <div class="bg-white rounded-2xl shadow-sm border overflow-x-auto hide-scrollbar p-2">
-                <table class="w-full text-left border-collapse min-w-[600px]">
-                    <thead><tr class="text-gray-500 text-sm border-b bg-white"><th class="p-4 font-medium min-w-[220px]">Usaha & Pendaftaran</th><th class="p-4 font-medium min-w-[150px]">Status & Keuangan</th><th class="p-4 font-medium min-w-[150px]">Pendamping</th><th class="p-4 font-medium">Aksi</th></tr></thead>
-                    <tbody id="table-pengajuan"></tbody>
-                </table>
-            </div>
-        </div>
+                <!-- (Tabel Thead dan Tbody Anda tetap sama di sini) -->
 
         <!-- TAB: KONSULTAN -->
         <div id="tab-konsultan" class="tab-content hidden">
