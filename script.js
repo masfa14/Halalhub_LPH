@@ -1,5 +1,5 @@
 // GANTI DENGAN URL WEB APP TERBARU ANDA (Setelah deploy ulang)
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwzPuEeO-CVoha2cmzS8txqw5o7rPYy6CxUboifSlY2m7DtMZQFuGsqCaLOYRqfaEq-/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyVj1iue7naAKaQLcYVm4P-jRINCOswkWWVEp1ELbGifFYoFbBR_CESWSha7h7GenRB/exec";
 
 let globalData = { pengajuan: [], konsultan: [], auditor: [] };
 
@@ -84,12 +84,15 @@ function renderDashboard() {
     document.getElementById('count-draf').innerText = draf;
 }
 
-// FUNGSI SEARCH (PENCARIAN NAMA USAHA)
+// SOLUSI: Pencarian bisa menggunakan Nama Pelaku Usaha ATAU Nomor Daftar
 function cariPengajuan() {
     const keyword = document.getElementById('searchPengajuan').value.toLowerCase();
-    const filteredData = globalData.pengajuan.filter(row => 
-        row["Nama Pelaku Usaha"].toLowerCase().includes(keyword)
-    );
+    const filteredData = globalData.pengajuan.filter(row => {
+        const namaPU = (row["Nama Pelaku Usaha"] || "").toLowerCase();
+        const noDaftar = (row["Nomor Daftar"] || "").toLowerCase();
+        
+        return namaPU.includes(keyword) || noDaftar.includes(keyword);
+    });
     renderTablePengajuan(filteredData);
 }
 
@@ -317,8 +320,11 @@ document.getElementById('formUpdatePengajuan').addEventListener('submit', (e) =>
     e.preventDefault();
     const fd = new URLSearchParams();
     fd.append('action', 'update_pengajuan');
+    
+    // SOLUSI: Memastikan ID dan Nama Usaha Baru ikut dikirim
     fd.append('id', document.getElementById('u_idPengajuan').value);
-    fd.append('nama', document.getElementById('u_editNamaUsaha').value); // Tambahkan baris ini
+    fd.append('nama', document.getElementById('u_editNamaUsaha').value); 
+    
     fd.append('no_daftar', document.getElementById('u_noDaftar').value);
     fd.append('status_sh', document.getElementById('u_statusSH').value);
     fd.append('bayar_via', document.getElementById('u_bayarVia').value);
