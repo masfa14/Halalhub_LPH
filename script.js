@@ -99,7 +99,7 @@ function renderTablePengajuan(dataList = globalData.pengajuan) {
     tbody.innerHTML = "";
     
     if (dataList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">Data tidak ditemukan</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500 py-10">Data tidak ditemukan</td></tr>`;
         return;
     }
 
@@ -108,41 +108,45 @@ function renderTablePengajuan(dataList = globalData.pengajuan) {
         const colorBayar = row["Status Bayar"] === "Sudah Bayar" ? "text-teal-600 bg-teal-50" : "text-red-600 bg-red-50";
         
         tbody.innerHTML += `
-            <tr class="border-b border-gray-100 hover:bg-gray-50 align-top">
-                <!-- Kolom 1: Info Usaha (Bisa multi-baris) -->
-                <td class="p-3 md:p-4 whitespace-normal break-words">
-                    <p class="font-bold text-gray-800 leading-tight">${row["Nama Pelaku Usaha"]}</p>
-                    <p class="text-xs text-gray-500 mt-1 font-mono">No: ${row["Nomor Daftar"] || 'Belum ada'}</p>
+            <tr class="border-b border-gray-100 hover:bg-gray-50 align-middle transition">
+                <!-- Info Usaha -->
+                <td class="p-4 whitespace-normal break-words">
+                    <p class="font-bold text-gray-800 text-[15px] leading-tight mb-1">${row["Nama Pelaku Usaha"]}</p>
+                    <p class="text-[11px] text-gray-500 font-mono">No: ${row["Nomor Daftar"] || 'Belum ada'}</p>
                 </td>
                 
-                <!-- Kolom 2: Status & Keuangan (Badge tersusun) -->
-                <td class="p-3 md:p-4 whitespace-nowrap">
-                    <div class="flex flex-col items-start gap-1">
-                        <span class="px-2 py-1 rounded-md text-[11px] font-bold ${colorSH}">${row["Status SH"] || 'Draf PU'}</span>
-                        <div class="text-[11px] mt-1 flex items-center gap-1 border border-gray-200 rounded px-1.5 py-0.5">
-                            <span class="text-gray-500">Via:</span><span class="font-bold">${row["Bayar Via"] || '-'}</span>
-                        </div>
-                        <span class="px-2 py-0.5 rounded text-[11px] font-bold ${colorBayar}">${row["Status Bayar"] || 'Belum Bayar'}</span>
+                <!-- Status & Keuangan (Bayar Via dihapus) -->
+                <td class="p-4 whitespace-nowrap">
+                    <div class="flex flex-col items-start gap-1.5">
+                        <span class="px-2.5 py-1 rounded-md text-[11px] font-bold ${colorSH}">${row["Status SH"] || 'Draf PU'}</span>
+                        <span class="px-2.5 py-1 rounded-md text-[11px] font-bold ${colorBayar}">${row["Status Bayar"] || 'Belum Bayar'}</span>
                     </div>
                 </td>
                 
-                <!-- Kolom 3: Pendamping -->
-                <td class="p-3 md:p-4 whitespace-nowrap">
-                    <p class="text-xs text-gray-600 mb-1"><span class="font-medium text-gray-400">K:</span> ${row["Nama Konsultan"] || '-'}</p>
-                    <p class="text-xs text-gray-600"><span class="font-medium text-gray-400">A:</span> ${row["Nama Auditor"] || '-'}</p>
+                <!-- Pendamping (Tata letak lebih modern) -->
+                <td class="p-4 whitespace-nowrap">
+                    <div class="flex flex-col gap-1.5">
+                        <p class="text-xs text-gray-700 bg-gray-50/80 px-2 py-1 rounded border border-gray-100"><span class="font-bold text-gray-400 mr-1">K:</span> ${row["Nama Konsultan"] || '-'}</p>
+                        <p class="text-xs text-gray-700 bg-gray-50/80 px-2 py-1 rounded border border-gray-100"><span class="font-bold text-gray-400 mr-1">A:</span> ${row["Nama Auditor"] || '-'}</p>
+                    </div>
                 </td>
                 
-                <!-- Kolom 4: Aksi -->
-                <td class="p-3 md:p-4 whitespace-nowrap flex gap-2">
-                    <button onclick="editPengajuan('${row["ID Pengajuan"]}')" class="text-blue-600 font-bold bg-blue-50 px-3 py-1.5 rounded-xl text-xs hover:bg-blue-100">Edit</button>
-                    <button onclick="hapusData('delete_pengajuan', '${row["ID Pengajuan"]}')" class="text-red-600 font-bold bg-red-50 px-3 py-1.5 rounded-xl text-xs hover:bg-red-100">Hapus</button>
+                <!-- Aksi (Hanya Icon, Teks dihapus) -->
+                <td class="p-4 whitespace-nowrap">
+                    <div class="flex gap-2">
+                        <button onclick="editPengajuan('${row["ID Pengajuan"]}')" class="text-blue-500 hover:bg-blue-50 p-2.5 rounded-xl transition flex items-center justify-center" title="Edit Data">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                        </button>
+                        <button onclick="hapusData('delete_pengajuan', '${row["ID Pengajuan"]}')" class="text-red-500 hover:bg-red-50 p-2.5 rounded-xl transition flex items-center justify-center" title="Hapus Data">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
     });
 }
 
-// FUNGSI RENDER DESAIN KARTU (Pengganti Tabel)
 function renderCardMaster(type, containerId, dataList = null) {
     const container = document.getElementById(containerId);
     container.innerHTML = "";
@@ -156,7 +160,6 @@ function renderCardMaster(type, containerId, dataList = null) {
         return;
     }
 
-    // 1. Hitung jumlah PU yang "Terbit SH" untuk setiap orang
     const completedCounts = {};
     globalData.pengajuan.forEach(p => {
         if (p["Status SH"] === "Terbit SH") {
@@ -165,41 +168,33 @@ function renderCardMaster(type, containerId, dataList = null) {
         }
     });
 
-    // 2. Buat Tampilan Kartu
     list.forEach(row => {
         const id = row[idKey];
         const nama = row[nameKey];
-        const totalSelesai = completedCounts[nama] || 0; // Mengambil jumlah selesai
+        const totalSelesai = completedCounts[nama] || 0; 
         
-        // Warna tema pembeda konsultan vs auditor
         const iconBg = type === 'konsultan' ? 'bg-blue-50 text-blue-500' : 'bg-indigo-50 text-indigo-500';
         const labelText = type === 'konsultan' ? 'Konsultan' : 'Auditor';
+        
+        // Pemilihan Ikon sesuai menu navigasi bawah
+        const svgIcon = type === 'konsultan' 
+            ? `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>`
+            : `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>`;
 
         container.innerHTML += `
             <div class="bg-white rounded-[1.5rem] p-4 shadow-[0_4px_15px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col md:flex-row gap-4 transition hover:shadow-md relative">
-                
-                <!-- Bintang Kanan Atas (Pengganti Love) -->
                 <div class="absolute top-4 right-4 text-gray-300 hidden md:block">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
                 </div>
 
                 <div class="flex items-center gap-4 flex-1">
-                    <!-- Icon Foto Avatar -->
                     <div class="w-[70px] h-[70px] rounded-[1.2rem] ${iconBg} flex items-center justify-center shrink-0 cursor-pointer" onclick="viewRiwayat('${type}', '${id}', '${nama}')">
-                        <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        ${svgIcon}
                     </div>
                     
-                    <!-- Content (Nama, Kategori, Rating) -->
                     <div class="flex-1 cursor-pointer" onclick="viewRiwayat('${type}', '${id}', '${nama}')">
                         <h3 class="font-bold text-gray-800 text-[16px] mb-0.5 leading-tight pr-6 md:pr-0">${nama}</h3>
-                        
-                        <div class="flex items-center text-[11px] text-gray-500 mb-2 gap-2">
-                            <span class="font-medium">${labelText}</span>
-                            <span class="w-0.5 h-3 bg-gray-300"></span>
-                            <span>ID: ${id}</span>
-                        </div>
-                        
-                        <!-- Area Bintang & Total PU -->
+                        <div class="flex items-center text-[11px] text-gray-500 mb-2 gap-2"><span class="font-medium">${labelText}</span><span class="w-0.5 h-3 bg-gray-300"></span><span>ID: ${id}</span></div>
                         <div class="flex items-center text-[12px] font-semibold text-gray-700">
                             <svg class="w-4 h-4 text-yellow-400 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                             <span>${totalSelesai} <span class="text-gray-400 font-normal">(PU Diselesaikan)</span></span>
@@ -207,7 +202,6 @@ function renderCardMaster(type, containerId, dataList = null) {
                     </div>
                 </div>
 
-                <!-- Action Buttons (Edit/Hapus) tersusun rapi di pojok -->
                 <div class="flex flex-row md:flex-col gap-2 md:border-l border-gray-100 md:pl-3 pt-3 md:pt-0 border-t md:border-t-0 justify-end md:justify-center">
                     <button onclick="openModalMaster('${type}', 'update', '${id}', '${nama}')" class="text-blue-500 hover:bg-blue-50 p-2 rounded-xl transition flex items-center justify-center gap-1 text-xs font-bold" title="Edit">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg> <span class="md:hidden">Edit</span>
