@@ -56,74 +56,31 @@ function renderDashboard() {
     const pData = globalData.pengajuan;
     const totalPengajuan = pData.length;
     
-    // Status Pengajuan
+    // --- 1. MENAMPILKAN TANGGAL HARI INI ---
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    const dateToday = new Date().toLocaleDateString('id-ID', options);
+    document.getElementById('current-date').innerText = "Today, " + dateToday;
+
+    // --- 2. LOGIKA OVERVIEW ---
     const selesai = pData.filter(p => p["Status SH"] === "Terbit SH").length;
     const batal = pData.filter(p => p["Status SH"] === "Dibatalkan" || p["Status SH"] === "Dikembalikan PU").length;
+    // Dalam Proses = Total dikurangi yang sudah Selesai & Batal
     const proses = totalPengajuan - selesai - batal; 
 
-    // --- LOGIKA BARU: Menghitung Keuangan ---
-    const sudahBayar = pData.filter(p => p["Status Bayar"] === "Sudah Bayar").length;
-    const feeSelesai = pData.filter(p => p["Fee"] === "Sudah Bayar").length;
-    const belumBayar = pData.filter(p => p["Status Bayar"] === "Belum Bayar").length;
+    // --- 3. LOGIKA ALERTS ---
+    // Belum Daftar = Nomor daftarnya kosong, strip (-), atau tidak ada nilai sama sekali
+    const belumDaftar = pData.filter(p => !p["Nomor Daftar"] || p["Nomor Daftar"].toString().trim() === "" || p["Nomor Daftar"] === "-").length;
+    // Draf = Status SH-nya "Draf PU"
     const draf = pData.filter(p => p["Status SH"] === "Draf PU").length;
 
-    // Masukkan nilainya ke HTML
-    document.getElementById('count-belum-bayar').innerText = belumBayar;
-    document.getElementById('count-draf').innerText = draf;
-
-    // Isi Nilai Status Pengajuan
+    // --- 4. MEMASUKKAN NILAI KE HTML ---
     document.getElementById('count-total').innerText = totalPengajuan;
-    document.getElementById('count-selesai').innerText = selesai;
     document.getElementById('count-proses').innerText = proses;
+    document.getElementById('count-selesai').innerText = selesai;
     document.getElementById('count-batal').innerText = batal;
     
-    // --- MENGISI NILAI KEUANGAN KE HTML ---
-    document.getElementById('count-status-bayar').innerText = sudahBayar;
-    document.getElementById('count-fee').innerText = feeSelesai;
-    
-    // Isi Total Konsultan & Auditor
-    document.getElementById('count-konsultan').innerText = globalData.konsultan.length;
-    document.getElementById('count-auditor').innerText = globalData.auditor.length;
-
-    // Menghitung Top 5 Konsultan berdasarkan "Terbit SH"
-    let rekapKonsultan = {};
-    pData.forEach(p => {
-        if (p["Status SH"] === "Terbit SH" && p["Nama Konsultan"]) {
-            rekapKonsultan[p["Nama Konsultan"]] = (rekapKonsultan[p["Nama Konsultan"]] || 0) + 1;
-        }
-    });
-    // Mengurutkan dan mengambil 5 teratas
-    let topKonsultan = Object.keys(rekapKonsultan).map(nama => {
-        return { nama: nama, total: rekapKonsultan[nama] };
-    }).sort((a, b) => b.total - a.total).slice(0, 5);
-
-    // Render ke HTML Top Konsultan
-    const listK = document.getElementById('list-top-konsultan');
-    listK.innerHTML = "";
-    if (topKonsultan.length === 0) listK.innerHTML = '<p class="text-sm text-gray-500 italic">Belum ada data penyelesaian.</p>';
-    topKonsultan.forEach((k, index) => {
-        listK.innerHTML += `<div class="flex justify-between items-center text-sm"><span class="flex items-center gap-2"><span class="bg-blue-100 text-blue-700 font-bold w-6 h-6 flex items-center justify-center rounded-full text-xs">${index+1}</span> <span class="font-medium text-gray-700">${k.nama}</span></span><span class="font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-md">${k.total} Selesai</span></div>`;
-    });
-
-    // Menghitung Top 5 Auditor berdasarkan "Terbit SH"
-    let rekapAuditor = {};
-    pData.forEach(p => {
-        if (p["Status SH"] === "Terbit SH" && p["Nama Auditor"]) {
-            rekapAuditor[p["Nama Auditor"]] = (rekapAuditor[p["Nama Auditor"]] || 0) + 1;
-        }
-    });
-    // Mengurutkan dan mengambil 5 teratas
-    let topAuditor = Object.keys(rekapAuditor).map(nama => {
-        return { nama: nama, total: rekapAuditor[nama] };
-    }).sort((a, b) => b.total - a.total).slice(0, 5);
-
-    // Render ke HTML Top Auditor
-    const listA = document.getElementById('list-top-auditor');
-    listA.innerHTML = "";
-    if (topAuditor.length === 0) listA.innerHTML = '<p class="text-sm text-gray-500 italic">Belum ada data penyelesaian.</p>';
-    topAuditor.forEach((a, index) => {
-        listA.innerHTML += `<div class="flex justify-between items-center text-sm"><span class="flex items-center gap-2"><span class="bg-indigo-100 text-indigo-700 font-bold w-6 h-6 flex items-center justify-center rounded-full text-xs">${index+1}</span> <span class="font-medium text-gray-700">${a.nama}</span></span><span class="font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-md">${a.total} Selesai</span></div>`;
-    });
+    document.getElementById('count-belum-daftar').innerText = belumDaftar;
+    document.getElementById('count-draf').innerText = draf;
 }
 
 // FUNGSI SEARCH (PENCARIAN NAMA USAHA)
